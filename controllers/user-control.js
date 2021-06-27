@@ -4,7 +4,6 @@ const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
 
 const registration = async (req, res, next) => {
-  console.log("I am here");
   try {
     console.log(req.body.email);
     const checksUser = await Users.findByEmail(req.body.email);
@@ -31,7 +30,27 @@ const registration = async (req, res, next) => {
 
 const login = async (req, res, next) => {};
 
-const logout = async (req, res, next) => {};
+const logout = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        message: "Not authorized",
+      });
+    }
+
+    await Users.updateToken(user.id, null);
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   registration,

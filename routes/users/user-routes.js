@@ -6,6 +6,6 @@ const { validateUser } = require("./validation");
 
 router.post("/registration", validateUser, ctrl.registration);
 // router.post("/login", validateUser, ctrl.login);
-// router.post("/logout", guard, ctrl.logout);
+router.post("/logout", guard, ctrl.logout);
 
 module.exports = router;
