@@ -2,11 +2,14 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const boolParser = require("express-query-boolean");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 const userRouter = require("./routes/users/user-routes");
 const { HttpCode } = require("./helpers/constants");
 
 const app = express();
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
@@ -15,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(boolParser());
 
-app.use("/api", userRouter);
+app.use("", userRouter);
 
 app.use((err, _req, res, _next) => {
   console.log(err);
