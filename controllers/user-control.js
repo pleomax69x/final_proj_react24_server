@@ -4,7 +4,6 @@ const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
 
 const registration = async (req, res, next) => {
-  console.log("I am here");
   try {
     console.log(req.body.email);
     const checksUser = await Users.findByEmail(req.body.email);
