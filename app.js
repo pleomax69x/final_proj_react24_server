@@ -4,6 +4,7 @@ const cors = require("cors");
 const boolParser = require("express-query-boolean");
 
 const userRouter = require("./routes/users/user-routes");
+const { HttpCode } = require("./helpers/constans");
 
 const app = express();
 
@@ -14,14 +15,21 @@ app.use(cors());
 app.use(express.json());
 app.use(boolParser());
 
-app.use("/api/users", userRouter);
+app.use("/api", userRouter);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
+app.use((err, _req, res, _next) => {
+  console.log(err);
+  const code = err.code || HttpCode.NOT_FOUND;
+  const status = err.status || "error";
+  const message = err || "error";
+  res.status(code).json({ status, code, message: message });
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+app.use((err, _req, res, _next) => {
+  const code = err.code || HttpCode.INTERNAL_SERVER_ERROR;
+  const status = err.status || "fail";
+  const message = err || "error";
+  res.status(code).json({ status, code, message: message });
 });
 
 module.exports = app;
