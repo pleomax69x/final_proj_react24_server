@@ -4,6 +4,8 @@ const cors = require("cors");
 const boolParser = require("express-query-boolean");
 
 const userRouter = require("./routes/users/user-routes");
+const projectRouter = require("./routes/projects/project-routes");
+
 const { HttpCode } = require("./helpers/constants");
 
 const app = express();
@@ -16,6 +18,7 @@ app.use(express.json());
 app.use(boolParser());
 
 app.use("/api", userRouter);
+app.use("/api", projectRouter);
 
 app.use((err, _req, res, _next) => {
   console.log(err);
