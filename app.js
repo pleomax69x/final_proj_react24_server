@@ -4,7 +4,7 @@ const cors = require("cors");
 const boolParser = require("express-query-boolean");
 
 const userRouter = require("./routes/users/user-routes");
-const { HttpCode } = require("./helpers/constans");
+const { HttpCode } = require("./helpers/constants");
 
 const app = express();
 
