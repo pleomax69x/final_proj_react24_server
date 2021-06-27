@@ -1,6 +1,6 @@
 const Users = require("../model/user-model");
 
-const { HttpCode } = require("../helpers/constans");
+const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
 
 const registration = async (req, res, next) => {
