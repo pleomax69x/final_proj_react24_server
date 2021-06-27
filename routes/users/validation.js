@@ -1,8 +1,20 @@
 const Joi = require("joi");
 
 const schemaUser = Joi.object({
-  email: Joi.string().min(5).max(30).required(),
-  password: Joi.string().alphanum().min(3).max(30).required(),
+  email: Joi.string()
+    .min(5)
+    .max(30)
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: false },
+    })
+    .required(),
+  password: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .regex(/[A-Z]\w+/)
+    .required(),
 });
 
 const validate = async (schema, body, next) => {
