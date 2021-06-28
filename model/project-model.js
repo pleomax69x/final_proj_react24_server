@@ -29,7 +29,12 @@ const getProjects = async (userId, query) => {
   return { projects, total, limit, page }
 }
 
+const removeProject = async (userId, projectId) => {
+  return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
+}
+
 module.exports = {
   createProject,
   getProjects,
+  removeProject,
 }

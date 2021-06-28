@@ -37,8 +37,32 @@ const getAll = async (req, res, next) => {
     next(error)
   }
 }
+  
+const remove = async (req, res, next) => {
+  //const userId = req.user.id
+  const userId = '60d860d6285a02077c1cefcb'
+  const projectId = req.params.projectId
+  try {
+    const project = await Projects.removeProject(userId, projectId)
+    if (project) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        message: 'Project was deleted',
+      })
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: 'error',
+      code: HttpCode.NOT_FOUND,
+      message: 'Not Found',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 module.exports = {
   create,
   getAll,
+  remove,
 }

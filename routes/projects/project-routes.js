@@ -6,7 +6,7 @@ const { validateProject } = require('./validation')
 
 router.post('/', validateProject, ctrl.create)
 router.get('/', ctrl.getAll)
-// router.delete('/:projectId', guard, ctrl.remove)
+router.delete('/:projectId', ctrl.remove)
 // router.patch('/:projectId/name', guard, validateProjectName, ctrl.patch)
 
 module.exports = router
