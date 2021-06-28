@@ -1,13 +1,27 @@
 const Joi = require('joi')
+const { HttpCode } = require('../../helpers/constants')
 
 const schemaProject = Joi.object({
   name: Joi.string()
-    .min(5)
-    .max(30)
-    .required(),
-  description: Joi.string()
+    .alphanum()
     .min(3)
+    .max(30)
+    .required()
+    .messages({
+      'string.empty': `"name" cannot be an empty field`,
+      'string.min': `"name" should contains at least 3 characters`,
+      'string.max': `"name" limit is 30 characters`,
+      'any.required': `"name" is a required field`,
+    }),
+  description: Joi.string()
+    .alphanum()
+    .min(5)
     .max(100)
+    .required()
+    .messages({
+      'string.min': `"description" should contains at least 5 characters`,
+      'string.max': `"description" limit is 100 characters`,
+    })
 })
 
 const validate = async (schema, body, next) => {
@@ -15,7 +29,7 @@ const validate = async (schema, body, next) => {
     await schema.validateAsync(body);
     next();
   } catch (err) {
-    next({ status: 400, message: err.message });
+    next({ status: HttpCode.BAD_REQUEST, message: err.message });
   }
 };
 
