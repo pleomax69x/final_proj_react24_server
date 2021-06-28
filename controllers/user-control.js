@@ -1,11 +1,13 @@
 const Users = require("../model/user-model");
 
-const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const jwt = require("jsonwebtoken");
+
+const { HttpCode } = require("../helpers/constants");
 
 const registration = async (req, res, next) => {
   try {
-    console.log(req.body.email);
     const checksUser = await Users.findByEmail(req.body.email);
 
     if (checksUser) {
@@ -15,13 +17,21 @@ const registration = async (req, res, next) => {
         message: "Email in use",
       });
     }
+
     const newUser = await Users.createUser(req.body);
-    const { email } = newUser;
+
+    const token = jwt.sign({ id: newUser._id }, JWT_SECRET_KEY, {
+      expiresIn: "24h",
+    });
+
+    await Users.updateToken(newUser?._id, token);
+
+    const { _id, email } = await newUser;
 
     return res.status(HttpCode.CREATED).json({
       status: "Created",
       code: HttpCode.CREATED,
-      data: { user: { email } },
+      data: { token, user: { email, _id } },
     });
   } catch (err) {
     next(err.message);

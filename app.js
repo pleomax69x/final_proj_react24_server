@@ -5,6 +5,7 @@ const boolParser = require("express-query-boolean");
 
 const userRouter = require("./routes/users/user-routes");
 const projectRouter = require("./routes/projects/project-routes");
+const sprintRouter = require("./routes/sprints/sprint-router");
 
 const { HttpCode } = require("./helpers/constants");
 
@@ -19,6 +20,7 @@ app.use(boolParser());
 
 app.use("/api", userRouter);
 app.use("/api", projectRouter);
+app.use("/", sprintRouter);
 
 app.use((err, _req, res, _next) => {
   console.log(err);
