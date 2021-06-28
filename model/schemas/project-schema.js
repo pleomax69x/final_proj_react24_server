@@ -13,10 +13,8 @@ const projectSchema = new Schema(
       required: [true, 'Set description for the project'],
     },
     owner: {
-      // type: SchemaTypes.ObjectId,
-      // ref: 'user',
-      type: String,
-      default: '60d860d6285a02077c1cefcb',
+      type: SchemaTypes.ObjectId,
+      ref: 'user',
     },
   },
   {

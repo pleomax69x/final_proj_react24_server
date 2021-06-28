@@ -29,17 +29,12 @@ const getProjects = async (userId, query) => {
   return { projects, total, limit, page }
 }
 
-const removeProject = async (userId, projectId) => {
-  return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
+const isOwner = async (userId) => {
+  return await Project.findOne({ owner: userId })
 }
 
-const isOwner = async (userId) => {
-  const owner = await Project.findOne({ owner: userId })
-  if (owner) {
-    console.log('owner')
-    return true
-  }
-  return console.log('not owner')
+const removeProject = async (userId, projectId) => {
+  return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
 }
 
 const updateProjectName = async (userId, projectId, body) => {
