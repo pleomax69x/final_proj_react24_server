@@ -6,10 +6,11 @@ const projectSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'Set name for project'],
+      required: [true, 'Set name for the project'],
     },
     description: {
       type: String,
+      required: [true, 'Set description for the project'],
     },
     owner: {
       // type: SchemaTypes.ObjectId,
