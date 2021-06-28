@@ -20,6 +20,25 @@ const create = async (req, res, next) => {
   }
 }
 
+const getAll = async (req, res, next) => {
+  try {
+    //const userId = req.user.id
+    const userId = '60d860d6285a02077c1cefcb'
+    const { projects, total, limit, page } = await Projects.getProjects(
+      userId,
+      req.query,
+    )
+    return res.status(HttpCode.OK).json({
+      status: 'success',
+      code: HttpCode.OK,
+      data: { total, limit, page, projects },
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
-    create,
+  create,
+  getAll,
 }

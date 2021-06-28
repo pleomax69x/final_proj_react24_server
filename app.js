@@ -20,9 +20,8 @@ app.use(cors());
 app.use(express.json());
 app.use(boolParser());
 
-
 app.use("", userRouter);
-app.use("/api", projectRouter);
+app.use("/projects", projectRouter);
 
 
 app.use((err, _req, res, _next) => {
