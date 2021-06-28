@@ -61,8 +61,34 @@ const remove = async (req, res, next) => {
   }
 }
 
+const patch = async (req, res, next) => {
+  //const userId = req.user.id
+  const userId = '60d860d6285a02077c1cefcb'
+  const projectId = req.params.projectId
+  const body = req.body
+  try {
+    const owner = await Projects.isOwner(userId)
+    if (owner) {
+      const project = await Projects.updateProjectName(userId, projectId, body)
+      if (project) {
+        return res
+        .status(HttpCode.OK)
+        .json({ status: 'success', code: HttpCode.OK, data: { project } })
+      }
+
+      return res
+      .status(HttpCode.NOT_FOUND)
+      .json({ status: 'error', code: HttpCode.NOT_FOUND, message: 'Not Found' })
+    }
+    return console.log("Not owner");
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   create,
   getAll,
   remove,
+  patch,
 }

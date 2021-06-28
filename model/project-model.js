@@ -33,8 +33,27 @@ const removeProject = async (userId, projectId) => {
   return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
 }
 
+const isOwner = async (userId) => {
+  const owner = await Project.findOne({ owner: userId })
+  if (owner) {
+    console.log('owner')
+    return true
+  }
+  return console.log('not owner')
+}
+
+const updateProjectName = async (userId, projectId, body) => {
+    return await Project.findOneAndUpdate(
+    { _id: projectId, owner: userId },
+    { ...body },
+    { new: true },
+  )
+}
+
 module.exports = {
   createProject,
   getProjects,
   removeProject,
+  updateProjectName,
+  isOwner,
 }
