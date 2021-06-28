@@ -24,6 +24,20 @@ const schemaProject = Joi.object({
     })
 })
 
+const schemaProjectName = Joi.object({
+  name: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required()
+    .messages({
+      'string.empty': `"name" cannot be an empty field`,
+      'string.min': `"name" should contains at least 3 characters`,
+      'string.max': `"name" limit is 30 characters`,
+      'any.required': `"name" is a required field`,
+    }),
+})
+
 const validate = async (schema, body, next) => {
   try {
     await schema.validateAsync(body);
@@ -33,6 +47,15 @@ const validate = async (schema, body, next) => {
   }
 };
 
-module.exports.validateProject = (req, _res, next) => {
+const validateProject = (req, _res, next) => {
   return validate(schemaProject, req.body, next);
+}
+
+const validateProjectName = (req, _res, next) => {
+  return validate(schemaProjectName, req.body, next);
+}
+
+module.exports = {
+  validateProject,
+  validateProjectName,
 }
