@@ -34,19 +34,17 @@ const registration = async (req, res, next) => {
       data: { token, user: { email, _id } },
     });
   } catch (err) {
-    next(err.message);
+    next(err);
   }
 };
 
 const login = async (req, res, next) => {
-
   try {
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
     const isValidPassword = await user?.validPassword(password);
 
     if (!user || !isValidPassword) {
-
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: "error",
         code: HttpCode.UNAUTHORIZED,
@@ -62,11 +60,12 @@ const login = async (req, res, next) => {
     return res.status(HttpCode.OK).json({
       status: "success",
       code: HttpCode.OK,
-      data: {token, user: { email, _id }},
+      data: { token, user: { email, _id } },
     });
   } catch (err) {
     next(err);
-  }};
+  }
+};
 
 const logout = async (req, res, next) => {
   try {
