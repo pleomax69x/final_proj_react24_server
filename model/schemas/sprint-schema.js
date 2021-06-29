@@ -11,8 +11,9 @@ const sprintSchema = new Schema(
       required: [true, "Data is required"],
     },
     duration: {
-      type: String,
+      type: Number,
       required: [true, "Duration is required"],
+      default: 2,
     },
     projectId: {
       type: SchemaTypes.ObjectId,
