@@ -12,6 +12,11 @@ const schemaRemoveSprint = Joi.object({
   id: Joi.string().required(),
 });
 
+const schemaRemoveSptint = Joi.object({
+  title: Joi.string().required(),
+  sprintId: Joi.string().required(),
+});
+
 const validate = async (schema, body, { projectId }, next) => {
   const data = {
     ...body,
@@ -43,10 +48,32 @@ const validateDel = async (schema, { id }, next) => {
   }
 };
 
+const validateChangeTitle = async (schema, { title }, { sprintId }, next) => {
+  try {
+    await schema.validateAsync(title, sprintId);
+    next();
+  } catch (err) {
+    next({
+      status: "fail",
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.validateCreateSprint = (req, _res, next) => {
   return validate(schemaCreateSprint, req.body, req.params, next);
 };
 
 module.exports.validateRemoveSptint = (req, _res, next) => {
   return validateDel(schemaRemoveSprint, req.body.id, next);
+};
+
+module.exports.validateChangeSprintTitle = (req, _res, next) => {
+  return validateChangeTitle(
+    schemaRemoveSptint,
+    req.body.title,
+    req.params.sprintId,
+    next
+  );
 };
