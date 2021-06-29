@@ -38,7 +38,41 @@ const registration = async (req, res, next) => {
   }
 };
 
-const login = async (req, res, next) => {};
+const login = async (req, res, next) => {
+
+  try {
+    const { email, password } = req.body;
+    const user = await Users.findByEmail(email);
+    const isValidPassword = await user?.validPassword(password);
+
+    if (!user || !isValidPassword) {
+
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        data: "UNAUTHORIZED",
+        message: "Email or password is wrong",
+      });
+    }
+    const id = user._id;
+    const payload = { id };
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "2h" });
+    await Users.updateToken(id, token);
+
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      data: {
+        token,
+        user: {
+          email: user.email,
+          subscription: user.subscription,
+        },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }};
 
 const logout = async (req, res, next) => {
   try {
