@@ -8,6 +8,7 @@ const swaggerDocument = require("./swagger.json");
 const userRouter = require("./routes/users/user-routes");
 const projectRouter = require("./routes/projects/project-routes");
 const sprintRouter = require("./routes/sprints/sprint-router");
+const taskRouter = require("./routes/tasks/task-router");
 
 const { HttpCode } = require("./helpers/constants");
 
@@ -24,6 +25,7 @@ app.use(boolParser());
 app.use("", userRouter);
 app.use("/projects", projectRouter);
 app.use("/", sprintRouter);
+app.use("/", taskRouter);
 
 app.use((err, _req, res, _next) => {
   console.log(err);

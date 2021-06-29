@@ -1,17 +1,16 @@
 const Joi = require("joi");
 const { HttpCode } = require("../../helpers/constants");
 
-const schemaCreateSprint = Joi.object({
+const schemaCreateTask = Joi.object({
   title: Joi.string().required(),
-  date: Joi.string().required(),
-  duration: Joi.number().required(),
-  projectId: Joi.string().required(),
+  scheduledHours: Joi.number().required(),
+  sprintId: Joi.string().required(),
 });
 
-const validate = async (schema, body, { projectId }, next) => {
+const validate = async (schema, body, { sprintId }, next) => {
   const data = {
     ...body,
-    projectId,
+    sprintId,
   };
   try {
     await schema.validateAsync(data);
@@ -26,6 +25,6 @@ const validate = async (schema, body, { projectId }, next) => {
   }
 };
 
-module.exports.validateCreateSprint = (req, _res, next) => {
-  return validate(schemaCreateSprint, req.body, req.params, next);
+module.exports.validateCreateTask = (req, _res, next) => {
+  return validate(schemaCreateTask, req.body, req.params, next);
 };

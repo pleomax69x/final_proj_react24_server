@@ -1,7 +1,7 @@
 const Sprint = require("./schemas/sprint-schema");
 
 const createSprint = async (body, projectId) => {
-  if (body || projectId) {
+  if (body && projectId) {
     const data = {
       ...body,
       projectId,
