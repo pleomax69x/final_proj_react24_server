@@ -32,8 +32,22 @@ const removeTask = async (taskId) => {
   }
 };
 
+const removeAllTasksBySprintId = async (sprintId) => {
+  if (sprintId) {
+    try {
+      const removedTasks = await Tasks.deleteMany({
+        sprintId: sprintId,
+      });
+      return removedTasks;
+    } catch (err) {
+      return err.message;
+    }
+  }
+};
+
 module.exports = {
   findById,
   createTask,
   removeTask,
+  removeAllTasksBySprintId,
 };

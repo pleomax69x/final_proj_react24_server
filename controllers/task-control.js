@@ -14,7 +14,7 @@ const addTask = async (req, res, next) => {
         status: "Created",
         code: HttpCode.CREATED,
         data: {
-          sprint: {
+          task: {
             id: _id,
             title,
             scheduledHours,
@@ -37,13 +37,20 @@ const deleteTask = async (req, res, next) => {
   try {
     const taskId = req.body.id;
     const deletedTask = await Task.removeTask(taskId);
+    const { _id, title, sprintId } = deletedTask;
 
     if (deletedTask) {
       return res.status(HttpCode.OK).json({
         status: "success",
         code: HttpCode.OK,
         message: "task was deleted",
-        data: deletedTask,
+        data: {
+          task: {
+            id: _id,
+            title,
+            sprintId,
+          },
+        },
       });
     } else {
       return res.status(HttpCode.NOT_FOUND).json({

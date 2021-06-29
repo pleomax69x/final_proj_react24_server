@@ -15,6 +15,20 @@ const createSprint = async (body, projectId) => {
   }
 };
 
+const removeSprint = async (sprintId) => {
+  if (sprintId) {
+    try {
+      const removedSprint = await Sprint.findByIdAndRemove({
+        _id: sprintId,
+      });
+      return removedSprint;
+    } catch (err) {
+      return err.message;
+    }
+  }
+};
+
 module.exports = {
   createSprint,
+  removeSprint,
 };
