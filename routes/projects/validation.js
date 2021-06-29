@@ -3,7 +3,6 @@ const { HttpCode } = require('../../helpers/constants')
 
 const schemaProject = Joi.object({
   name: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .required()
@@ -14,7 +13,6 @@ const schemaProject = Joi.object({
       'any.required': `"name" is a required field`,
     }),
   description: Joi.string()
-    .alphanum()
     .min(5)
     .max(100)
     .required()
@@ -27,7 +25,6 @@ const schemaProject = Joi.object({
 
 const schemaProjectName = Joi.object({
   name: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .required()
