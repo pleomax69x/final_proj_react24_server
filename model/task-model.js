@@ -5,7 +5,6 @@ const findById = async (id) => {
 };
 
 const createTask = async (body, sprintId) => {
-  console.log("id", sprintId);
   if (body && sprintId) {
     const data = {
       ...body,
@@ -20,7 +19,21 @@ const createTask = async (body, sprintId) => {
   }
 };
 
+const removeTask = async (taskId) => {
+  if (taskId) {
+    try {
+      const task = await Tasks.findByIdAndRemove({
+        _id: taskId,
+      });
+      return task;
+    } catch (err) {
+      return err.message;
+    }
+  }
+};
+
 module.exports = {
   findById,
   createTask,
+  removeTask,
 };

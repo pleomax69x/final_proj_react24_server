@@ -7,6 +7,10 @@ const schemaCreateTask = Joi.object({
   sprintId: Joi.string().required(),
 });
 
+const schemaDeleteTask = Joi.object({
+  id: Joi.string().required(),
+});
+
 const validate = async (schema, body, { sprintId }, next) => {
   const data = {
     ...body,
@@ -25,6 +29,24 @@ const validate = async (schema, body, { sprintId }, next) => {
   }
 };
 
+const validateDel = async (schema, body, next) => {
+  try {
+    await schema.validateAsync(body);
+
+    next();
+  } catch (err) {
+    next({
+      status: "fail",
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.validateCreateTask = (req, _res, next) => {
   return validate(schemaCreateTask, req.body, req.params, next);
+};
+
+module.exports.validateDeleteTask = (req, _res, next) => {
+  return validateDel(schemaDeleteTask, req.body, next);
 };
