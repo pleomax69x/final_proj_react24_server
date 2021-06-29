@@ -66,7 +66,39 @@ const removeSptint = async (req, res, next) => {
   }
 };
 
+const changeSprintName = async (req, res, next) => {
+  const newTitle = req.body.title;
+  const sprintId = req.params.sprintId;
+
+  try {
+    if (newTitle) {
+      const result = await Sprint.changeName(newTitle, sprintId);
+      const { _id, title, projectId } = result;
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        message: "title was change",
+        data: {
+          sprint: {
+            id: _id,
+            newTitle: title,
+            projectId,
+          },
+        },
+      });
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "title was not change",
+    });
+  } catch (err) {
+    next(err.message);
+  }
+};
+
 module.exports = {
   addSprint,
   removeSptint,
+  changeSprintName,
 };

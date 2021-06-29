@@ -28,7 +28,22 @@ const removeSprint = async (sprintId) => {
   }
 };
 
+const changeName = async (title, sprintId) => {
+  try {
+    const newTitle = await Sprint.findOneAndUpdate(
+      { _id: sprintId },
+      { title },
+      { new: true }
+    );
+
+    return newTitle;
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 module.exports = {
   createSprint,
   removeSprint,
+  changeName,
 };
