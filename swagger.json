@@ -192,7 +192,6 @@
           "schema": {
             "type": "string"
           }
-          
         },
          {
           "name": "filter",
@@ -254,7 +253,9 @@
             "content": {}
           }
         }
-      },
+      }
+    },
+    "/projects/{projectId}/name": {
       "patch": {
         "tags": ["Projects"],
         "summary": "Update project name",
@@ -266,7 +267,8 @@
           "schema": {
             "type": "string"
           }
-        }],
+        }
+        ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Project object",
