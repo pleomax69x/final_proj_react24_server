@@ -9,8 +9,6 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
   "servers": [
     { "url": "https://planning-app1.herokuapp.com/" },
     { "url": "http://localhost:5000/" }
@@ -19,10 +17,22 @@
     {
       "name": "Auth",
       "description": "Authorization endpoints"
+    },
+    {
+      "name": "Projects",
+      "description": "Projects endpoints"
+    },
+    {
+      "name": "Sprints",
+      "description": "Sprints endpoints"
+    },
+    {
+      "name": "Tasks",
+      "description": "Tasks endpoints"
     }
   ],
   "paths": {
-    "/register": {
+    "/registration": {
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
@@ -127,26 +137,227 @@
           }
         }
       }
+    },
+    "/projects": {
+      "post": {
+        "tags": ["Projects"],
+        "summary": "Create project",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Project object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Projects"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (Validation Error)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get all projects in which the user is a teammate",
+        "parameters": [
+          {
+          "name": "sortBy",
+          "in": "query",
+          "description": "Sorting. First created project will shown first",
+          "example": "name",
+          "schema": {
+            "type": "string"
+          }
+          
+          },
+          {
+          "name": "sortByDesc",
+          "in": "query",
+          "description": "Sorting. Last created project will shown first",
+          "example": "createdAt",
+          "schema": {
+            "type": "string"
+          }
+          
+        },
+         {
+          "name": "filter",
+          "in": "query",
+          "description": "Filter. Choose only fields you need",
+          "example": "name|description",
+          "schema": {
+            "type": "string"
+          }
+          
+        }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "delete": {
+        "tags": ["Projects"],
+        "summary": "Delete project",
+        "operationId": "getUserById",
+        "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Projects"],
+        "summary": "Update project name",
+        "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Project object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectName"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Projects": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name",
+            "minLength": 3,
+            "maxLength": 30
+          },
+          "description": {
+            "type": "string",
+            "description": "Project description",
+            "minLength": 5,
+            "maxLength": 100
+          },
+          "owner": {
+            "type": "string",
+            "description": "Ref to user Owner of the project"
+          }
+        },
+        "example": { "name": "Project1", "description": "description" }
+      },
+      "ProjectName": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name",
+            "minLength": 3,
+            "maxLength": 30
+          }
+        },
+        "example": { "name": "Renamed project" }
+      },
       "RegistrationRequest": {
         "type": "object",
         "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
-            "description": "User's email",
+            "description": "User email",
             "format": "email"
           },
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "description": "User password",
+            "example": "qweWerty"
           }
         },
-        "example": { "email": "asdf@asdf.com", "password": "123qwe" }
+        "example": { "email": "yourmail@gmail.com", "password": "qweWerty" }
       },
       "RegistrationResponse": {
         "type": "array",
@@ -155,20 +366,20 @@
           "properties": {
             "email": {
               "type": "string",
-              "description": "User's email",
+              "description": "User email",
               "format": "email"
             },
             "password": {
               "type": "number",
-              "description": "User's password",
-              "example": "123qwe"
+              "description": "User password",
+              "example": "qweWerty"
             }
           }
         },
         "example": {
           "status": "Created",
           "code": 201,
-          "data": { "email": "qwe@gmail.com", "password": "123qwe" }
+          "data": { "email": "yourmail@gmail.com", "password": "qweWerty" }
         }
       },
       "LoginRequest": {
@@ -178,29 +389,29 @@
           "properties": {
             "email": {
               "type": "string",
-              "description": "User's email",
+              "description": "User email",
               "format": "email"
             },
             "password": {
               "type": "number",
-              "description": "User's password"
+              "description": "User password"
             }
           }
         },
         "example": {
           "email": "yourmail@gmail.com",
-          "password": "123qwe"
+          "password": "qweWerty"
         }
       },
       "LoginResponse": {
         "type": "array",
+        "items": {},
         "example": {
           "status": "success",
           "code": 200,
           "data": {
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjljY2VjMjA2NTU2Mjk3ODY1MDdlYSIsImlhdCI6MTYxNzczMjQxNCwiZXhwIjoxNjE3ODE4ODE0fQ.HZJ5ee1NazSeARNFQrJzLlMkzkjXkpWwbKCumURUVgs",
             "user": {
-              "name": "YourName",
               "email": "yourmail@gmail.com"
             }
           }

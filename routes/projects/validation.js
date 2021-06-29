@@ -19,6 +19,7 @@ const schemaProject = Joi.object({
     .max(100)
     .required()
     .messages({
+      'string.empty': `"description" cannot be an empty field`,
       'string.min': `"description" should contains at least 5 characters`,
       'string.max': `"description" limit is 100 characters`,
     })
@@ -43,7 +44,11 @@ const validate = async (schema, body, next) => {
     await schema.validateAsync(body);
     next();
   } catch (err) {
-    next({ status: HttpCode.BAD_REQUEST, message: err.message });
+    next({
+      status: HttpCode.BAD_REQUEST,
+      code: HttpCode.BAD_REQUEST,
+      message: err.message
+    });
   }
 };
 
