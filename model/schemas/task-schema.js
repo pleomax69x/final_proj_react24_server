@@ -12,7 +12,7 @@ const taskSchema = new Schema(
       default: 2,
     },
     sprintId: {
-      type: SchemaTypes.ObjectId,
+      type: String,
       required: [true, "sprint id is required"],
       ref: "sprint",
     },

@@ -49,11 +49,7 @@ const removeSptint = async (req, res, next) => {
         code: HttpCode.OK,
         message: "sprint was deleted",
         data: {
-          sprint: {
-            id: _id,
-            title,
-            projectId,
-          },
+          sprint: removedSprint,
         },
       });
     }
