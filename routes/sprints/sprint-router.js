@@ -39,11 +39,4 @@ router.get(
   ctrl.getAllSprints
 );
 
-router.get(
-  "/projects/:projectId/sprints/:sprintId",
-  guard,
-  validateGetTasks,
-  ctrl.getAllTasks
-);
-
 module.exports = router;

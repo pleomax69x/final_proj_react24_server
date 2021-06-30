@@ -3,7 +3,11 @@ const router = express.Router();
 const ctrl = require("../../controllers/task-control");
 const guard = require("../../helpers/guard");
 
-const { validateCreateTask, validateDeleteTask } = require("./validation");
+const {
+  validateCreateTask,
+  validateDeleteTask,
+  validateGetTasks,
+} = require("./validation");
 
 router.post(
   "/projects/:projectId/sprints/:sprintId",
@@ -17,6 +21,13 @@ router.delete(
   guard,
   validateDeleteTask,
   ctrl.deleteTask
+);
+
+router.get(
+  "/projects/:projectId/sprints/:sprintId",
+  guard,
+  validateGetTasks,
+  ctrl.getAllTasks
 );
 
 module.exports = router;

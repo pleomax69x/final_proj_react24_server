@@ -1,4 +1,5 @@
 const Task = require("../model/task-model");
+const Sprint = require("../model/sprint-model");
 
 const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
@@ -64,7 +65,35 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
+const getAllTasks = async (req, res, next) => {
+  const sprintId = req.params.sprintId;
+
+  try {
+    if (sprintId) {
+      const tasks = await Task.getAllTaskBySprintId(sprintId);
+      const sprint = await Sprint.getSprintById(sprintId);
+
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        data: {
+          sprint,
+          tasks,
+        },
+      });
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "not found",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   addTask,
   deleteTask,
+  getAllTasks,
 };
