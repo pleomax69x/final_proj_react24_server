@@ -54,13 +54,13 @@ const login = async (req, res, next) => {
     }
     const id = user._id;
     const payload = { id };
-    const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: "2h" });
+    const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: "24h" });
     await Users.updateToken(id, token);
 
     return res.status(HttpCode.OK).json({
       status: "success",
       code: HttpCode.OK,
-      data: { token, user: { email, _id } },
+      data: { token, user: { email, id } },
     });
   } catch (err) {
     next(err);
