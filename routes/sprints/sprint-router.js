@@ -22,7 +22,7 @@ router.delete(
   "/projects/:projectId/sprints",
   guard,
   validateRemoveSptint,
-  ctrl.removeSptint
+  ctrl.removeSprint
 );
 
 router.patch(

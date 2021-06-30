@@ -12,7 +12,7 @@ const schemaRemoveSprint = Joi.object({
   id: Joi.string().required(),
 });
 
-const schemaRemoveSptint = Joi.object({
+const schemaChangeSprintTitle = Joi.object({
   title: Joi.string().required(),
   sprintId: Joi.string().required(),
 });
@@ -88,7 +88,7 @@ module.exports.validateRemoveSptint = (req, _res, next) => {
 
 module.exports.validateChangeSprintTitle = (req, _res, next) => {
   return validateChangeTitle(
-    schemaRemoveSptint,
+    schemaChangeSprintTitle,
     req.body.title,
     req.params.sprintId,
     next
