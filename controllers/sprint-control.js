@@ -97,8 +97,34 @@ const changeSprintName = async (req, res, next) => {
   }
 };
 
+const getAllSprints = async (req, res, next) => {
+  const projectId = req.params.projectId;
+  try {
+    if (projectId) {
+      const sprints = await Sprint.getAllSprints(projectId);
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        data: {
+          sprints: {
+            sprints,
+          },
+        },
+      });
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "not found",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   addSprint,
   removeSptint,
   changeSprintName,
+  getAllSprints,
 };

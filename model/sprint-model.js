@@ -38,7 +38,16 @@ const changeName = async (title, sprintId) => {
 
     return newTitle;
   } catch (err) {
-    console.log(err.message);
+    return err.message;
+  }
+};
+
+const getAllSprints = async (projectId) => {
+  try {
+    const sprints = await Sprint.find({ projectId: projectId });
+    return sprints;
+  } catch (err) {
+    return err.message;
   }
 };
 
@@ -46,4 +55,5 @@ module.exports = {
   createSprint,
   removeSprint,
   changeName,
+  getAllSprints,
 };
