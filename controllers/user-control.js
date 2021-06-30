@@ -94,7 +94,7 @@ const current = async (req, res, next) => {
     const userId = req.user.id;
     const user = await Users.findById(userId);
     if (user) {
-      const { subscription, email } = user;
+      const { email } = user;
       return res.status(HttpCode.OK).json({
         status: "success",
         code: HttpCode.OK,
