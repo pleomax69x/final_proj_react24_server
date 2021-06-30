@@ -51,7 +51,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successful operation",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
@@ -61,11 +61,11 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request (Invalid request body)",
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "Conflict (Email is in use)",
             "content": {}
           }
         }
@@ -90,7 +90,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -100,15 +100,16 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request (Invalid request body)",
             "content": {}
           },
           "401": {
-            "description": "UNAUTHORIZED",
+            "description": "Unauthorized (Email or password is wrong)",
             "content": {}
           },
           "500": {
-            "description": "INTERNAL_SERVER_ERROR"
+            "description": "Internal server error",
+            "content": {}
           }
         }
       }
@@ -121,19 +122,15 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "204": {
-            "description": "Successful logout 204 No content",
-            "content": {}
+            "description": "Successful logout (No content)"
           },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "403": {
-            "description": "FORBIDDEN",
+          "401": {
+            "description": "Unauthorized (Not authorized)",
             "content": {}
           },
           "500": {
-            "description": "INTERNAL_SERVER_ERROR"
+            "description": "Internal server error",
+            "content": {}
           }
         }
       }
@@ -162,6 +159,10 @@
           },
           "400": {
             "description": "Bad request (Validation Error)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
             "content": {}
           },
           "404": {
@@ -209,6 +210,10 @@
             "description": "Success",
             "content": {}
           },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
           "404": {
             "description": "Not found",
             "content": {}
@@ -241,7 +246,7 @@
             "content": {}
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Forbidden (Permission error)",
             "content": {}
           },
           "404": {
@@ -253,9 +258,7 @@
             "content": {}
           }
         }
-      }
-    },
-    "/projects/{projectId}/name": {
+      },
       "patch": {
         "tags": ["Projects"],
         "summary": "Update project name",
@@ -295,7 +298,7 @@
             "content": {}
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Forbidden (Permission error)",
             "content": {}
           },
           "404": {
@@ -326,7 +329,18 @@
           },
           "owner": {
             "type": "string",
-            "description": "Ref to user Owner of the project"
+            "format": "ObjectId",
+            "description": "Ref to user (Owner of the project)"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When project was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When project was updated"
           }
         },
         "example": { "name": "Project1", "description": "description" }
@@ -350,13 +364,17 @@
         "properties": {
           "email": {
             "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
             "description": "User email",
             "format": "email"
           },
           "password": {
             "type": "string",
-            "description": "User password",
-            "example": "qweWerty"
+            "minLength": 3,
+            "maxLength": 30,
+            "format": "A-Za-z0-9",
+            "description": "User password. Special characters are not allowed!"
           }
         },
         "example": { "email": "yourmail@gmail.com", "password": "qweWerty" }
@@ -370,40 +388,41 @@
               "type": "string",
               "description": "User email",
               "format": "email"
-            },
-            "password": {
-              "type": "number",
-              "description": "User password",
-              "example": "qweWerty"
             }
           }
         },
         "example": {
           "status": "Created",
           "code": 201,
-          "data": { "email": "yourmail@gmail.com", "password": "qweWerty" }
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGMzNTJlM2E4ZTc0MDAxYzdkMDVmMyIsImlhdCI6MTYyNTA0NDI3MCwiZXhwIjoxNjI1MTMwNjcwfQ.AKHW4VtuVt9ibrMNXLrS32j2hjrTcwF2l60jNFOuOYA",
+            "user": {
+              "email": "yourmail@gmail.com",
+              "_id": "60dc352e3a8e74001c7d05f3"
+            }
+          }
         }
       },
       "LoginRequest": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User email",
-              "format": "email"
-            },
-            "password": {
-              "type": "number",
-              "description": "User password"
-            }
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
+            "description": "User email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "format": "A-Za-z0-9",
+            "description": "User password. Special characters are not allowed!"
           }
         },
-        "example": {
-          "email": "yourmail@gmail.com",
-          "password": "qweWerty"
-        }
+        "example": {"email": "yourmail@gmail.com", "password": "qweWerty"}
       },
       "LoginResponse": {
         "type": "array",
@@ -412,9 +431,10 @@
           "status": "success",
           "code": 200,
           "data": {
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjljY2VjMjA2NTU2Mjk3ODY1MDdlYSIsImlhdCI6MTYxNzczMjQxNCwiZXhwIjoxNjE3ODE4ODE0fQ.HZJ5ee1NazSeARNFQrJzLlMkzkjXkpWwbKCumURUVgs",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGMzNTJlM2E4ZTc0MDAxYzdkMDVmMyIsImlhdCI6MTYyNTA0NDI3MCwiZXhwIjoxNjI1MTMwNjcwfQ.AKHW4VtuVt9ibrMNXLrS32j2hjrTcwF2l60jNFOuOYA",
             "user": {
-              "email": "yourmail@gmail.com"
+              "email": "yourmail@gmail.com",
+              "_id": "60dc352e3a8e74001c7d05f3"
             }
           }
         }
