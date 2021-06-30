@@ -27,7 +27,7 @@ const addTask = async (req, res, next) => {
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: "Error",
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: newSprint,
+      message: newTask,
     });
   } catch (err) {
     next(err.message);

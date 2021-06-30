@@ -9,12 +9,11 @@ const sprintSchema = new Schema(
     },
     date: {
       type: String,
-      required: [true, "Data is required"],
+      required: [true, "Date is required"],
     },
     duration: {
       type: Number,
       required: [true, "Duration is required"],
-      default: 2,
     },
     projectId: {
       type: SchemaTypes.ObjectId,
