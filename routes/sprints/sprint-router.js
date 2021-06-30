@@ -5,6 +5,7 @@ const {
   validateCreateSprint,
   validateRemoveSptint,
   validateChangeSprintTitle,
+  validateGetSprints,
 } = require("../sprints/validation");
 
 router.post(
@@ -23,6 +24,12 @@ router.patch(
   "/projects/:projectId/sprints/:sprintId",
   validateChangeSprintTitle,
   ctrl.changeSprintName
+);
+
+router.get(
+  "/projects/:projectId/sprints",
+  validateGetSprints,
+  ctrl.getAllSprints
 );
 
 module.exports = router;

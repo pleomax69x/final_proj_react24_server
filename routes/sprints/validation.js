@@ -17,7 +17,11 @@ const schemaRemoveSptint = Joi.object({
   sprintId: Joi.string().required(),
 });
 
-const validate = async (schema, body, { projectId }, next) => {
+const schemaGetAllSprints = Joi.object({
+  projectId: Joi.string().required,
+});
+
+const validateCreate = async (schema, body, { projectId }, next) => {
   const data = {
     ...body,
     projectId,
@@ -61,8 +65,21 @@ const validateChangeTitle = async (schema, { title }, { sprintId }, next) => {
   }
 };
 
+const validateGet = async (schema, { projectId }, next) => {
+  try {
+    await schema.validateAsync(projectId);
+    next();
+  } catch (err) {
+    next({
+      status: "fail",
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.validateCreateSprint = (req, _res, next) => {
-  return validate(schemaCreateSprint, req.body, req.params, next);
+  return validateCreate(schemaCreateSprint, req.body, req.params, next);
 };
 
 module.exports.validateRemoveSptint = (req, _res, next) => {
@@ -76,4 +93,8 @@ module.exports.validateChangeSprintTitle = (req, _res, next) => {
     req.params.sprintId,
     next
   );
+};
+
+module.exports.validateGetSprints = (req, _res, next) => {
+  return validateGet(schemaGetAllSprints, req.params.projectId, next);
 };
