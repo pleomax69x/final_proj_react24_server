@@ -22,7 +22,7 @@ const create = async (req, res, next) => {
 const getAll = async (req, res, next) => {
   const userId = req.user.id
   try {
-    const { projects, total, limit, page } = await Projects.getProjects(
+    const { projects, total, limit, page } = await Projects.getAllProjects(
       userId,
       req.query,
     )
