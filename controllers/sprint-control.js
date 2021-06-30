@@ -103,7 +103,7 @@ const getAllSprints = async (req, res, next) => {
 
   try {
     if (projectId) {
-      const sprints = await Sprint.getAllSprints(projectId, req.query);
+      const sprints = await Sprint.getAllSprints(projectId);
       const project = await Project.getProjectById(projectId);
 
       return res.status(HttpCode.OK).json({
@@ -125,9 +125,37 @@ const getAllSprints = async (req, res, next) => {
   }
 };
 
+const getAllTasks = async (req, res, next) => {
+  const sprintId = req.params.sprintId;
+
+  try {
+    if (sprintId) {
+      const tasks = await Tasks.getAllTaskBySprintId(sprintId);
+      const sprint = await Sprint.getSprintById(sprintId);
+
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        data: {
+          sprint,
+          tasks,
+        },
+      });
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "not found",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   addSprint,
   removeSptint,
   changeSprintName,
   getAllSprints,
+  getAllTasks,
 };

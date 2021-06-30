@@ -21,6 +21,10 @@ const schemaGetAllSprints = Joi.object({
   projectId: Joi.string().required,
 });
 
+const schemaGetAllTasks = Joi.object({
+  spritnId: Joi.string().required(),
+});
+
 const validateCreate = async (schema, body, { projectId }, next) => {
   const data = {
     ...body,
@@ -65,9 +69,22 @@ const validateChangeTitle = async (schema, { title }, { sprintId }, next) => {
   }
 };
 
-const validateGet = async (schema, { projectId }, next) => {
+const validateGetSprint = async (schema, { projectId }, next) => {
   try {
     await schema.validateAsync(projectId);
+    next();
+  } catch (err) {
+    next({
+      status: "fail",
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: err.message,
+    });
+  }
+};
+
+const validateGetTask = async (schema, { sprintId }, next) => {
+  try {
+    await schema.validateAsync(sprintId);
     next();
   } catch (err) {
     next({
@@ -96,5 +113,9 @@ module.exports.validateChangeSprintTitle = (req, _res, next) => {
 };
 
 module.exports.validateGetSprints = (req, _res, next) => {
-  return validateGet(schemaGetAllSprints, req.params.projectId, next);
+  return validateGetSprint(schemaGetAllSprints, req.params.projectId, next);
+};
+
+module.exports.validateGetTasks = (req, _res, next) => {
+  return validateGetTask(schemaGetAllTasks, req.params.sprintId, next);
 };

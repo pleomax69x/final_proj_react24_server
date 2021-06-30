@@ -45,9 +45,21 @@ const removeAllTasksBySprintId = async (sprintId) => {
   }
 };
 
+const getAllTaskBySprintId = async (sprintId) => {
+  if (sprintId) {
+    try {
+      const tasks = await Tasks.find({ sprintId: sprintId });
+      return tasks;
+    } catch (err) {
+      return err.message;
+    }
+  }
+};
+
 module.exports = {
   findById,
   createTask,
   removeTask,
   removeAllTasksBySprintId,
+  getAllTaskBySprintId,
 };

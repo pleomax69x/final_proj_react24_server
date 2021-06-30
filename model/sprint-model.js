@@ -51,9 +51,19 @@ const getAllSprints = async (projectId) => {
   }
 };
 
+const getSprintById = async (sprintId) => {
+  try {
+    const sprint = await Sprint.findById({ _id: sprintId });
+    return sprint;
+  } catch (err) {
+    return err.message;
+  }
+};
+
 module.exports = {
   createSprint,
   removeSprint,
   changeName,
   getAllSprints,
+  getSprintById,
 };
