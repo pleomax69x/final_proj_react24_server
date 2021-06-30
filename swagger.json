@@ -51,7 +51,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successful operation",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
@@ -61,11 +61,11 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request (Invalid request body)",
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "Conflict (Email is in use)",
             "content": {}
           }
         }
@@ -90,7 +90,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -100,15 +100,16 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request (Invalid request body)",
             "content": {}
           },
           "401": {
-            "description": "UNAUTHORIZED",
+            "description": "Unauthorized (Email or password is wrong)",
             "content": {}
           },
           "500": {
-            "description": "INTERNAL_SERVER_ERROR"
+            "description": "Internal server error",
+            "content": {}
           }
         }
       }
@@ -121,19 +122,15 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "204": {
-            "description": "Successful logout 204 No content",
-            "content": {}
+            "description": "Successful logout (No content)"
           },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "403": {
-            "description": "FORBIDDEN",
+          "401": {
+            "description": "Unauthorized (Not authorized)",
             "content": {}
           },
           "500": {
-            "description": "INTERNAL_SERVER_ERROR"
+            "description": "Internal server error",
+            "content": {}
           }
         }
       }
@@ -162,6 +159,10 @@
           },
           "400": {
             "description": "Bad request (Validation Error)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
             "content": {}
           },
           "404": {
@@ -209,6 +210,10 @@
             "description": "Success",
             "content": {}
           },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
           "404": {
             "description": "Not found",
             "content": {}
@@ -220,7 +225,6 @@
       "delete": {
         "tags": ["Projects"],
         "summary": "Delete project",
-        "operationId": "getUserById",
         "parameters": [
         {
           "name": "projectId",
@@ -241,7 +245,7 @@
             "content": {}
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Forbidden (Permission error)",
             "content": {}
           },
           "404": {
@@ -253,9 +257,7 @@
             "content": {}
           }
         }
-      }
-    },
-    "/projects/{projectId}/name": {
+      },
       "patch": {
         "tags": ["Projects"],
         "summary": "Update project name",
@@ -295,7 +297,182 @@
             "content": {}
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Forbidden (Permission error)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/sprints": {
+      "post": {
+        "tags": ["Sprints"],
+        "summary": "Create sprint",
+        "parameters": [
+          {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Sprint object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sprints"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (Validation Error)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": ["Sprints"],
+        "summary": "Get all sprints",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/sprints/{sprintId}": {
+      "delete": {
+        "tags": ["Sprints"],
+        "summary": "Delete sprint",
+        "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "sprintId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success (Sprint was deleted)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden (Permission error)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Sprints"],
+        "summary": "Update sprint",
+        "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "sprintId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Sprint object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SprintTitle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden (Permission error)",
             "content": {}
           },
           "404": {
@@ -308,6 +485,76 @@
   },
   "components": {
     "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
+            "description": "User email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "format": "A-Za-z0-9",
+            "description": "User password. Special characters are not allowed!"
+          }
+        },
+        "example": { "email": "yourmail@gmail.com", "password": "qweWerty" }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "example": {
+          "status": "Created",
+          "code": 201,
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGMzNTJlM2E4ZTc0MDAxYzdkMDVmMyIsImlhdCI6MTYyNTA0NDI3MCwiZXhwIjoxNjI1MTMwNjcwfQ.AKHW4VtuVt9ibrMNXLrS32j2hjrTcwF2l60jNFOuOYA",
+            "user": {
+              "email": "yourmail@gmail.com",
+              "_id": "60dc352e3a8e74001c7d05f3"
+            }
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30,
+            "description": "User email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "format": "A-Za-z0-9",
+            "description": "User password. Special characters are not allowed!"
+          }
+        },
+        "example": {"email": "yourmail@gmail.com", "password": "qweWerty"}
+      },
+      "LoginResponse": {
+        "type": "object",
+        "example": {
+          "status": "success",
+          "code": 200,
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGMzNTJlM2E4ZTc0MDAxYzdkMDVmMyIsImlhdCI6MTYyNTA0NDI3MCwiZXhwIjoxNjI1MTMwNjcwfQ.AKHW4VtuVt9ibrMNXLrS32j2hjrTcwF2l60jNFOuOYA",
+            "user": {
+              "email": "yourmail@gmail.com",
+              "_id": "60dc352e3a8e74001c7d05f3"
+            }
+          }
+        }
+      },
       "Projects": {
         "type": "object",
         "required": ["name", "description"],
@@ -326,7 +573,18 @@
           },
           "owner": {
             "type": "string",
-            "description": "Ref to user Owner of the project"
+            "format": "ObjectId",
+            "description": "Ref to user (Owner of the project)"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When project was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When project was updated"
           }
         },
         "example": { "name": "Project1", "description": "description" }
@@ -344,80 +602,50 @@
         },
         "example": { "name": "Renamed project" }
       },
-      "RegistrationRequest": {
+      "Sprints": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": ["title", "date", "duration"],
         "properties": {
-          "email": {
+          "title": {
             "type": "string",
-            "description": "User email",
-            "format": "email"
+            "description": "Sprint title"
           },
-          "password": {
+          "date": {
             "type": "string",
-            "description": "User password",
-            "example": "qweWerty"
+            "description": "Sprint start date"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration of the sprint"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "Ref to project"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When sprint was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When sprint was updated"
           }
         },
-        "example": { "email": "yourmail@gmail.com", "password": "qweWerty" }
+        "example": { "title": "Sprint1", "date": "2021-06-30", "duration": "10" }
       },
-      "RegistrationResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User email",
-              "format": "email"
-            },
-            "password": {
-              "type": "number",
-              "description": "User password",
-              "example": "qweWerty"
-            }
+      "SprintTitle": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Sprint title"
           }
         },
-        "example": {
-          "status": "Created",
-          "code": 201,
-          "data": { "email": "yourmail@gmail.com", "password": "qweWerty" }
-        }
-      },
-      "LoginRequest": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User email",
-              "format": "email"
-            },
-            "password": {
-              "type": "number",
-              "description": "User password"
-            }
-          }
-        },
-        "example": {
-          "email": "yourmail@gmail.com",
-          "password": "qweWerty"
-        }
-      },
-      "LoginResponse": {
-        "type": "array",
-        "items": {},
-        "example": {
-          "status": "success",
-          "code": 200,
-          "data": {
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjljY2VjMjA2NTU2Mjk3ODY1MDdlYSIsImlhdCI6MTYxNzczMjQxNCwiZXhwIjoxNjE3ODE4ODE0fQ.HZJ5ee1NazSeARNFQrJzLlMkzkjXkpWwbKCumURUVgs",
-            "user": {
-              "email": "yourmail@gmail.com"
-            }
-          }
-        }
+        "example": { "name": "Renamed sprint" }
       }
     },
     "securitySchemes": {
