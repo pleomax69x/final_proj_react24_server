@@ -5,6 +5,7 @@ const sprintSchema = new Schema(
     title: {
       type: String,
       required: [true, "Title is required"],
+      index: true, // too speedup search by title
     },
     date: {
       type: String,
