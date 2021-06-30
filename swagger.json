@@ -382,9 +382,7 @@
             "content": {}
           }
         }
-      }
-    },
-    "/projects/{projectId}/sprints/{sprintId}": {
+      },
       "delete": {
         "tags": ["Sprints"],
         "summary": "Delete sprint",
@@ -396,15 +394,18 @@
           "schema": {
             "type": "string"
           }
-        },
-        {
-          "name": "sprintId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
         }],
+        "requestBody": {
+          "description": "Sprint object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SprintDelete"
+              }
+            }
+          }
+        },
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
@@ -424,7 +425,9 @@
             "content": {}
           }
         }
-      },
+      }
+    },
+    "/projects/{projectId}/sprints/{sprintId}": {
       "patch": {
         "tags": ["Sprints"],
         "summary": "Update sprint",
@@ -636,6 +639,17 @@
         },
         "example": { "title": "Sprint1", "date": "2021-06-30", "duration": "10" }
       },
+      "SprintDelete": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Sprint id"
+          }
+        },
+        "example": { "id": "60dcbc0ecd8638001c283ac2" }
+      },
       "SprintTitle": {
         "type": "object",
         "required": ["title"],
@@ -645,7 +659,7 @@
             "description": "Sprint title"
           }
         },
-        "example": { "name": "Renamed sprint" }
+        "example": { "title": "Renamed sprint" }
       }
     },
     "securitySchemes": {
