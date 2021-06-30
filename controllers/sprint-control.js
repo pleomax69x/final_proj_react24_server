@@ -1,5 +1,6 @@
 const Sprint = require("../model/sprint-model");
 const Tasks = require("../model/task-model");
+const Project = require("../model/project-model");
 
 const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
@@ -99,16 +100,18 @@ const changeSprintName = async (req, res, next) => {
 
 const getAllSprints = async (req, res, next) => {
   const projectId = req.params.projectId;
+
   try {
     if (projectId) {
-      const sprints = await Sprint.getAllSprints(projectId);
+      const sprints = await Sprint.getAllSprints(projectId, req.query);
+      const project = await Project.getProjectById(projectId);
+
       return res.status(HttpCode.OK).json({
         status: "success",
         code: HttpCode.OK,
         data: {
-          sprints: {
-            sprints,
-          },
+          project,
+          sprints,
         },
       });
     }
