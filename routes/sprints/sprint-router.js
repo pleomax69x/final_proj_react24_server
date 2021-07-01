@@ -5,34 +5,34 @@ const guard = require("../../helpers/guard");
 
 const {
   validateCreateSprint,
-  validateRemoveSptint,
+  validateRemoveSprint,
   validateChangeSprintTitle,
   validateGetSprints,
 } = require("../sprints/validation");
 
 router.post(
-  "/projects/:projectId/sprints",
+  "/:projectId",
   guard,
   validateCreateSprint,
   ctrl.addSprint
 );
 
 router.delete(
-  "/projects/:projectId/sprints/:sprintId",
+  "/:sprintId",
   guard,
-  validateRemoveSptint,
+  validateRemoveSprint,
   ctrl.removeSprint
 );
 
 router.patch(
-  "/projects/:projectId/sprints/:sprintId",
+  "/:sprintId",
   guard,
   validateChangeSprintTitle,
   ctrl.changeSprintName
 );
 
 router.get(
-  "/projects/:projectId/sprints",
+  "/:projectId",
   guard,
   validateGetSprints,
   ctrl.getAllSprints

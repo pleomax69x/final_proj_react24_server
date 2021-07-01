@@ -11,28 +11,28 @@ const {
 } = require("./validation");
 
 router.post(
-  "/projects/:projectId/sprints/:sprintId",
+  "/:sprintId",
   guard,
   validateCreateTask,
   ctrl.addTask
 );
 
 router.delete(
-  "/projects/:projectId/sprints/:sprintId/:taskId",
+  "/:taskId",
   guard,
   validateDeleteTask,
   ctrl.deleteTask
 );
 
 router.get(
-  "/projects/:projectId/sprints/:sprintId",
+  "/:sprintId",
   guard,
   validateGetTasks,
   ctrl.getAllTasks
 );
 
 router.patch(
-  "/projects/:projectId/sprints/:sprintId/:taskId",
+  "/:taskId",
   validateChangeTask,
   ctrl.changeTask
 );

@@ -24,8 +24,8 @@ app.use(boolParser());
 
 app.use("", userRouter);
 app.use("/projects", projectRouter);
-app.use("/", sprintRouter);
-app.use("/", taskRouter);
+app.use("/sprints", sprintRouter);
+app.use("/tasks", taskRouter);
 
 app.use((err, _req, res, _next) => {
   const code = err.code || HttpCode.NOT_FOUND;
