@@ -8,7 +8,6 @@ const {
   validateRemoveSptint,
   validateChangeSprintTitle,
   validateGetSprints,
-  validateGetTasks,
 } = require("../sprints/validation");
 
 router.post(
@@ -19,7 +18,7 @@ router.post(
 );
 
 router.delete(
-  "/projects/:projectId/sprints",
+  "/projects/:projectId/sprints/:sprintId",
   guard,
   validateRemoveSptint,
   ctrl.removeSprint

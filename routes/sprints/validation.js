@@ -9,7 +9,7 @@ const schemaCreateSprint = Joi.object({
 });
 
 const schemaRemoveSprint = Joi.object({
-  id: Joi.string().required(),
+  sprintId: Joi.string().required(),
 });
 
 const schemaChangeSprintTitle = Joi.object({
@@ -18,7 +18,7 @@ const schemaChangeSprintTitle = Joi.object({
 });
 
 const schemaGetAllSprints = Joi.object({
-  projectId: Joi.string().required,
+  projectId: Joi.string().required(),
 });
 
 const validateCreate = async (schema, body, { projectId }, next) => {
@@ -39,9 +39,9 @@ const validateCreate = async (schema, body, { projectId }, next) => {
   }
 };
 
-const validateDel = async (schema, { id }, next) => {
+const validateDel = async (schema, { sprintId }, next) => {
   try {
-    await schema.validateAsync(id);
+    await schema.validateAsync(sprintId);
     next();
   } catch (err) {
     next({
@@ -53,8 +53,13 @@ const validateDel = async (schema, { id }, next) => {
 };
 
 const validateChangeTitle = async (schema, { title }, { sprintId }, next) => {
+  const data = {
+    title,
+    sprintId,
+  };
+
   try {
-    await schema.validateAsync(title, sprintId);
+    await schema.validateAsync(data);
     next();
   } catch (err) {
     next({
@@ -83,13 +88,13 @@ module.exports.validateCreateSprint = (req, _res, next) => {
 };
 
 module.exports.validateRemoveSptint = (req, _res, next) => {
-  return validateDel(schemaRemoveSprint, req.body.id, next);
+  return validateDel(schemaRemoveSprint, req.params.sprintId, next);
 };
 
 module.exports.validateChangeSprintTitle = (req, _res, next) => {
   return validateChangeTitle(
     schemaChangeSprintTitle,
-    req.body.title,
+    req.body,
     req.params.sprintId,
     next
   );

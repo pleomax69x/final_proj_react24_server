@@ -11,8 +11,18 @@ const taskSchema = new Schema(
       required: [true, "Scheduled hours is required"],
       default: 2,
     },
+    hoursPerDay: {
+      type: Number,
+      requred: false,
+      default: 0,
+    },
+    totalHours: {
+      type: Number,
+      requred: false,
+      default: 0,
+    },
     sprintId: {
-      type: String,
+      type: SchemaTypes.ObjectId,
       required: [true, "sprint id is required"],
       ref: "sprint",
     },

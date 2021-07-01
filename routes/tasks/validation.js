@@ -8,14 +8,20 @@ const schemaCreateTask = Joi.object({
 });
 
 const schemaDeleteTask = Joi.object({
-  id: Joi.string().required(),
+  taskId: Joi.string().required(),
 });
 
 const schemaGetAllTasks = Joi.object({
   spritnId: Joi.string().required(),
 });
 
-const validate = async (schema, body, { sprintId }, next) => {
+const schemaChangeTask = Joi.object({
+  taskId: Joi.string().required(),
+  hoursPerDay: Joi.number(),
+  totalHours: Joi.number(),
+});
+
+const validateCreate = async (schema, body, { sprintId }, next) => {
   const data = {
     ...body,
     sprintId,
@@ -33,9 +39,9 @@ const validate = async (schema, body, { sprintId }, next) => {
   }
 };
 
-const validateDel = async (schema, body, next) => {
+const validateDel = async (schema, { taskId }, next) => {
   try {
-    await schema.validateAsync(body);
+    await schema.validateAsync(taskId);
 
     next();
   } catch (err) {
@@ -60,14 +66,36 @@ const validateGetTask = async (schema, { sprintId }, next) => {
   }
 };
 
+const validateChange = async (schema, body, { taskId }, next) => {
+  const data = {
+    ...body,
+    taskId,
+  };
+  try {
+    console.log("val", taskId);
+    await schema.validateAsync(data);
+    next();
+  } catch (err) {
+    next({
+      status: "fail",
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.validateCreateTask = (req, _res, next) => {
-  return validate(schemaCreateTask, req.body, req.params, next);
+  return validateCreate(schemaCreateTask, req.body, req.params, next);
 };
 
 module.exports.validateDeleteTask = (req, _res, next) => {
-  return validateDel(schemaDeleteTask, req.body, next);
+  return validateDel(schemaDeleteTask, req.params.taskId, next);
 };
 
 module.exports.validateGetTasks = (req, _res, next) => {
   return validateGetTask(schemaGetAllTasks, req.params.sprintId, next);
+};
+
+module.exports.validateChangeTask = (req, _res, next) => {
+  return validateChange(schemaChangeTask, req.body, req.params, next);
 };
