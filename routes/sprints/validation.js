@@ -87,7 +87,7 @@ module.exports.validateCreateSprint = (req, _res, next) => {
   return validateCreate(schemaCreateSprint, req.body, req.params, next);
 };
 
-module.exports.validateRemoveSptint = (req, _res, next) => {
+module.exports.validateRemoveSprint = (req, _res, next) => {
   return validateDel(schemaRemoveSprint, req.params.sprintId, next);
 };
 
