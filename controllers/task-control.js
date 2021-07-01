@@ -7,9 +7,9 @@ require("dotenv").config();
 const addTask = async (req, res, next) => {
   const sprintId = req.params.sprintId;
   try {
-    const checkSptint = await Sprint.getSprintById(sprintId);
+    const checkSprint = await Sprint.getSprintById(sprintId);
 
-    if (checkSptint) {
+    if (checkSprint) {
       const newTask = await Task.createTask(req.body, sprintId);
       const { _id, title, scheduledHours } = newTask;
 

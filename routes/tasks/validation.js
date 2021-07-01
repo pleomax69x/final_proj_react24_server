@@ -12,7 +12,7 @@ const schemaDeleteTask = Joi.object({
 });
 
 const schemaGetAllTasks = Joi.object({
-  spritnId: Joi.string().required(),
+  sprintId: Joi.string().required(),
 });
 
 const schemaChangeTask = Joi.object({
