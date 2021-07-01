@@ -7,6 +7,7 @@ const {
   validateCreateTask,
   validateDeleteTask,
   validateGetTasks,
+  validateChangeTask,
 } = require("./validation");
 
 router.post(
@@ -17,7 +18,7 @@ router.post(
 );
 
 router.delete(
-  "/projects/:projectId/sprints/:sprintId",
+  "/projects/:projectId/sprints/:sprintId/:taskId",
   guard,
   validateDeleteTask,
   ctrl.deleteTask
@@ -28,6 +29,12 @@ router.get(
   guard,
   validateGetTasks,
   ctrl.getAllTasks
+);
+
+router.patch(
+  "/projects/:projectId/sprints/:sprintId/:taskId",
+  validateChangeTask,
+  ctrl.changeTask
 );
 
 module.exports = router;

@@ -28,7 +28,6 @@ app.use("/", sprintRouter);
 app.use("/", taskRouter);
 
 app.use((err, _req, res, _next) => {
-  console.log(err);
   const code = err.code || HttpCode.NOT_FOUND;
   const status = err.status || "error";
   const message = err || "error";

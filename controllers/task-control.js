@@ -40,7 +40,7 @@ const addTask = async (req, res, next) => {
 
 const deleteTask = async (req, res, next) => {
   try {
-    const taskId = req.body.id;
+    const taskId = req.params.taskId;
     const deletedTask = await Task.removeTask(taskId);
 
     if (deletedTask) {
@@ -96,8 +96,31 @@ const getAllTasks = async (req, res, next) => {
   }
 };
 
+const changeTask = async (req, res, next) => {
+  const taskId = req.params.taskId;
+  try {
+    const changedTask = await Task.changeTaskById(req.body, taskId);
+    if (changedTask) {
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        message: "task was changed",
+        data: changedTask,
+      });
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "task was not change",
+    });
+  } catch (err) {
+    next(err.message);
+  }
+};
+
 module.exports = {
   addTask,
   deleteTask,
   getAllTasks,
+  changeTask,
 };

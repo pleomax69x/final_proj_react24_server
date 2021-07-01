@@ -40,7 +40,7 @@ const addSprint = async (req, res, next) => {
 };
 
 const removeSprint = async (req, res, next) => {
-  const sprintId = req.body.id;
+  const sprintId = req.params.sprintId;
   try {
     const removedSprint = await Sprint.removeSprintAndTasks(sprintId);
     if (removedSprint) {

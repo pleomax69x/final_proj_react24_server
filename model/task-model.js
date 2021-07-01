@@ -56,10 +56,26 @@ const getAllTaskBySprintId = async (sprintId) => {
   }
 };
 
+const changeTaskById = async (body, taskId) => {
+  if (taskId) {
+    try {
+      const changedTask = await Tasks.findOneAndUpdate(
+        { _id: taskId },
+        { ...body },
+        { new: true }
+      );
+      return changedTask;
+    } catch (err) {
+      return err.message;
+    }
+  }
+};
+
 module.exports = {
   findById,
   createTask,
   removeTask,
   removeAllTasksBySprintId,
   getAllTaskBySprintId,
+  changeTaskById,
 };
