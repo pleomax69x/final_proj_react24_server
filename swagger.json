@@ -578,7 +578,7 @@
       },
       "patch": {
         "tags": ["Tasks"],
-        "summary": "Rename task",
+        "summary": "Change hours per day in task",
         "parameters": [
         {
           "name": "taskId",
