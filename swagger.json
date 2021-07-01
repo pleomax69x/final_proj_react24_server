@@ -138,7 +138,7 @@
     "/projects": {
       "post": {
         "tags": ["Projects"],
-        "summary": "Create project",
+        "summary": "Create a project",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -173,7 +173,7 @@
       },
       "get": {
         "tags": ["Projects"],
-        "summary": "Get all projects in which the user is a teammate",
+        "summary": "Get all projects",
         "parameters": [
           {
           "name": "sortBy",
@@ -224,7 +224,7 @@
     "/projects/{projectId}": {
       "delete": {
         "tags": ["Projects"],
-        "summary": "Delete project",
+        "summary": "Delete a project (sprints and tasks associated with it)",
         "parameters": [
         {
           "name": "projectId",
@@ -260,7 +260,7 @@
       },
       "patch": {
         "tags": ["Projects"],
-        "summary": "Update project name",
+        "summary": "Rename project",
         "parameters": [
         {
           "name": "projectId",
@@ -307,10 +307,10 @@
         }
       }
     },
-    "/projects/{projectId}/sprints": {
+    "/sprints/{projectId}": {
       "post": {
         "tags": ["Sprints"],
-        "summary": "Create sprint",
+        "summary": "Create a sprint",
         "parameters": [
           {
           "name": "projectId",
@@ -382,30 +382,21 @@
             "content": {}
           }
         }
-      },
+      }
+    },
+    "/sprints/{sprintId}": {
       "delete": {
         "tags": ["Sprints"],
-        "summary": "Delete sprint",
+        "summary": "Delete a sprint (and tasks associated with it)",
         "parameters": [
         {
-          "name": "projectId",
+          "name": "sprintId",
           "in": "path",
           "required": true,
           "schema": {
             "type": "string"
           }
         }],
-        "requestBody": {
-          "description": "Sprint object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SprintDelete"
-              }
-            }
-          }
-        },
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
@@ -425,21 +416,11 @@
             "content": {}
           }
         }
-      }
-    },
-    "/projects/{projectId}/sprints/{sprintId}": {
+      },
       "patch": {
         "tags": ["Sprints"],
-        "summary": "Update sprint",
+        "summary": "Rename sprint",
         "parameters": [
-        {
-          "name": "projectId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        },
         {
           "name": "sprintId",
           "in": "path",
@@ -457,6 +438,165 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SprintTitle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden (Permission error)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/tasks/{sprintId}": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create a task",
+        "parameters": [
+         {
+          "name": "sprintId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Task object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tasks"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (Validation Error)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get all tasks",
+        "parameters": [
+          {
+            "name": "sprintId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}": {
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete a task",
+        "parameters": [
+        {
+          "name": "taskId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success (Task was deleted)",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden (Permission error)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Change hours per day in task",
+        "parameters": [
+        {
+          "name": "taskId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Task object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskHoursPerDay"
               }
             }
           }
@@ -639,17 +779,6 @@
         },
         "example": { "title": "Sprint1", "date": "2021-06-30", "duration": "10" }
       },
-      "SprintDelete": {
-        "type": "object",
-        "required": ["id"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Sprint id"
-          }
-        },
-        "example": { "id": "60dcbc0ecd8638001c283ac2" }
-      },
       "SprintTitle": {
         "type": "object",
         "required": ["title"],
@@ -660,6 +789,58 @@
           }
         },
         "example": { "title": "Renamed sprint" }
+      },
+      "Tasks": {
+        "type": "object",
+        "required": ["title", "scheduledHours"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Sprint title"
+          },
+          "scheduledHours": {
+            "type": "number",
+            "default": 2,
+            "description": "Scheduled hours to complete task"
+          },
+          "hoursPerDay": {
+            "type": "number",
+            "default": 0,
+            "description": "Hours per day spent on task"
+          },
+          "totalHours": {
+            "type": "number",
+            "default": 0,
+            "description": "The total number of hours spent on task"
+          },
+          "sprintId": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "Ref to sprint"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When task was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "ISODate",
+            "description": "When task was updated"
+          }
+        },
+        "example": { "title": "Task1", "scheduledHours": 5 }
+      },
+      "TaskHoursPerDay": {
+        "type": "object",
+        "required": ["hoursPerDay"],
+        "properties": {
+          "hoursPerDay": {
+            "type": "number",
+            "description": "Hours per day spent on task"
+          }
+        },
+        "example": { "hoursPerDay": 3 }
       }
     },
     "securitySchemes": {

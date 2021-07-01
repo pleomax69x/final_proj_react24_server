@@ -13,12 +13,12 @@ const taskSchema = new Schema(
     },
     hoursPerDay: {
       type: Number,
-      requred: false,
+      required: false,
       default: 0,
     },
     totalHours: {
       type: Number,
-      requred: false,
+      required: false,
       default: 0,
     },
     sprintId: {

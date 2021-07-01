@@ -4,7 +4,6 @@ const createProject = async body => {
   return await Project.create(body)
 }
 
-
 const getProjectById = async (projectId) => {
   return await Project.findOne({ _id: projectId });
 }
