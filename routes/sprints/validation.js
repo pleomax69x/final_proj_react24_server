@@ -95,7 +95,7 @@ module.exports.validateChangeSprintTitle = (req, _res, next) => {
   return validateChangeTitle(
     schemaChangeSprintTitle,
     req.body,
-    req.params.sprintId,
+    req.params,
     next
   );
 };
