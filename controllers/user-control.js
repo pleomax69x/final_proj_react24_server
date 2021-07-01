@@ -48,7 +48,6 @@ const login = async (req, res, next) => {
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: "error",
         code: HttpCode.UNAUTHORIZED,
-        data: "UNAUTHORIZED",
         message: "Email or password is wrong",
       });
     }

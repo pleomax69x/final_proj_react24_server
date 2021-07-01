@@ -67,7 +67,7 @@ const removeSprintAndTasks = async (sprintId) => {
     const removedSprint = await removeSprint(sprintId);
     return removedSprint;
   } catch (err) {
-    return err.messsge;
+    return err.message;
   }
 };
 
