@@ -58,7 +58,6 @@ const getAllTaskBySprintId = async (sprintId) => {
 
 const changeTaskById = async (body, taskId) => {
   if (taskId) {
-    console.log("change model");
     try {
       const changedTask = await Tasks.findOneAndUpdate(
         { _id: taskId },

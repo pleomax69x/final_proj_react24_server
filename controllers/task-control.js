@@ -99,7 +99,6 @@ const getAllTasks = async (req, res, next) => {
 const changeTask = async (req, res, next) => {
   const taskId = req.params.taskId;
   try {
-    console.log("controls", taskId);
     const changedTask = await Task.changeTaskById(req.body, taskId);
     if (changedTask) {
       return res.status(HttpCode.OK).json({

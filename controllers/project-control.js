@@ -12,11 +12,11 @@ const create = async (req, res, next) => {
       code: HttpCode.CREATED,
       data: { project },
     });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      error.status = HttpCode.BAD_REQUEST;
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      err.status = HttpCode.BAD_REQUEST;
     }
-    next(error);
+    next(err);
   }
 };
 
@@ -39,8 +39,8 @@ const getAll = async (req, res, next) => {
       code: HttpCode.NOT_FOUND,
       message: "Not Found",
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -56,7 +56,6 @@ const remove = async (req, res, next) => {
         const result = await Sprints.removeSprintAndTasks(sprint._id);
         return result;
       });
-      console.log("map", result);
 
       const project = await Projects.removeProject(userId, projectId);
       if (project) {
@@ -72,15 +71,13 @@ const remove = async (req, res, next) => {
         message: "Not Found",
       });
     }
-    return res
-      .status(HttpCode.FORBIDDEN)
-      .json({
-        status: "error",
-        code: HttpCode.FORBIDDEN,
-        message: "Forbidden",
-      });
-  } catch (error) {
-    next(error);
+    return res.status(HttpCode.FORBIDDEN).json({
+      status: "error",
+      code: HttpCode.FORBIDDEN,
+      message: "Forbidden",
+    });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -97,23 +94,19 @@ const patch = async (req, res, next) => {
           .status(HttpCode.OK)
           .json({ status: "success", code: HttpCode.OK, data: { project } });
       }
-      return res
-        .status(HttpCode.NOT_FOUND)
-        .json({
-          status: "error",
-          code: HttpCode.NOT_FOUND,
-          message: "Not Found",
-        });
-    }
-    return res
-      .status(HttpCode.FORBIDDEN)
-      .json({
+      return res.status(HttpCode.NOT_FOUND).json({
         status: "error",
-        code: HttpCode.FORBIDDEN,
-        message: "Forbidden",
+        code: HttpCode.NOT_FOUND,
+        message: "Not Found",
       });
-  } catch (error) {
-    next(error);
+    }
+    return res.status(HttpCode.FORBIDDEN).json({
+      status: "error",
+      code: HttpCode.FORBIDDEN,
+      message: "Forbidden",
+    });
+  } catch (err) {
+    next(err);
   }
 };
 

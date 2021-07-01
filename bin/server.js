@@ -9,7 +9,7 @@ db.then(() => {
   app.listen(PORT, () => {
     console.log(`Server running. Use our API on port: ${PORT}`);
   });
-}).catch((e) => {
-  console.log("Error:", e.message);
+}).catch((err) => {
+  console.log("Error:", err.message);
   process.exit(1);
 });

@@ -72,7 +72,6 @@ const validateChange = async (schema, body, { taskId }, next) => {
     taskId,
   };
   try {
-    console.log("val", taskId);
     await schema.validateAsync(data);
     next();
   } catch (err) {

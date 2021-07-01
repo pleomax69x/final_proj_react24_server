@@ -84,8 +84,8 @@ const logout = async (req, res, next) => {
       status: "success",
       code: HttpCode.OK,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -107,8 +107,8 @@ const current = async (req, res, next) => {
         message: "Not authorized",
       });
     }
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 
