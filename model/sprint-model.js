@@ -1,4 +1,5 @@
 const Sprint = require("./schemas/sprint-schema");
+const Tasks = require("./task-model");
 
 const createSprint = async (body, projectId) => {
   if (body && projectId) {
@@ -60,10 +61,21 @@ const getSprintById = async (sprintId) => {
   }
 };
 
+const removeSprintAndTasks = async (sprintId) => {
+  try {
+    await Tasks.removeAllTasksBySprintId(sprintId);
+    const removedSprint = await removeSprint(sprintId);
+    return removedSprint;
+  } catch (err) {
+    return err.messsge;
+  }
+};
+
 module.exports = {
   createSprint,
   removeSprint,
   changeName,
   getAllSprints,
   getSprintById,
+  removeSprintAndTasks,
 };
