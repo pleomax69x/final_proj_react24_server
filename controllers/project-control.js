@@ -26,9 +26,12 @@ const create = async (req, res, next) => {
 }
 
 const getAll = async (req, res, next) => {
+  const userId = req.user.id;
   const projectsId = req.user.projectsId;
   try {
+    
     const { projects, total, limit, page } = await Projects.getAllProjects(
+      userId,
       projectsId,
       req.query
     );
