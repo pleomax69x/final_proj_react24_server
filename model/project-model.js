@@ -1,4 +1,5 @@
 const Project = require("./schemas/project-schema")
+const User = require("./schemas/user-schema");
 
 const createProject = async body => {
   return await Project.create(body)
@@ -8,7 +9,7 @@ const getProjectById = async (projectId) => {
   return await Project.findOne({ _id: projectId });
 }
 
-const getAllProjects = async (userId, query) => {
+const getAllProjects = async (projectsId, query) => {
   const {
     limit = 12,
     page = 1,
@@ -17,7 +18,7 @@ const getAllProjects = async (userId, query) => {
     filter,
   } = query
 
-  const optionsSearch = { owner: userId }
+  const optionsSearch = {_id: projectsId}
 
   const results = await Project.paginate(optionsSearch, {
     limit,
