@@ -4,18 +4,12 @@ const findById = async (id) => {
   return await Tasks.findOne({ _id: id });
 };
 
-const createTask = async (body, sprintId) => {
-  if (body && sprintId) {
-    const data = {
-      ...body,
-      sprintId,
-    };
-    try {
-      const taskData = await new Tasks(data);
-      return await taskData.save();
-    } catch (err) {
-      return err.message;
-    }
+const createTask = async (data) => {
+  try {
+    const newTask = await new Tasks(data);
+    return await newTask.save();
+  } catch (err) {
+    return err.message;
   }
 };
 
