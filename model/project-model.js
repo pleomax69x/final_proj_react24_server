@@ -1,5 +1,4 @@
 const Project = require("./schemas/project-schema")
-const User = require("./schemas/user-schema");
 
 const createProject = async body => {
   return await Project.create(body)
