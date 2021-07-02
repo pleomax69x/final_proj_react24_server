@@ -6,12 +6,19 @@ require("dotenv").config();
 
 const addSprint = async (req, res, next) => {
   const projectId = req.params.projectId;
+  const currentUser = req.user.id;
   try {
     const checkProject = await Project.getProjectById(projectId);
 
     if (checkProject) {
-      const newSprint = await Sprint.createSprint(req.body, projectId);
-      const { _id, title, date, duration } = newSprint;
+      const data = {
+        ...req.body,
+        createdBy: currentUser,
+        projectId,
+      };
+      const newSprint = await Sprint.createSprint(data);
+
+      const { _id, title, date, duration, createdBy } = newSprint;
 
       if (_id) {
         return res.status(HttpCode.CREATED).json({
@@ -24,15 +31,21 @@ const addSprint = async (req, res, next) => {
               date,
               duration,
               projectId,
+              createdBy,
             },
           },
         });
       }
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+        status: "Error",
+        code: HttpCode.INTERNAL_SERVER_ERROR,
+        message: "sprint was not created",
+      });
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: "Error",
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: "project does not exist",
+      message: "project was not found",
     });
   } catch (err) {
     next(err.message);
@@ -40,23 +53,29 @@ const addSprint = async (req, res, next) => {
 };
 
 const removeSprint = async (req, res, next) => {
+  const curentUserId = req.user.id;
   const sprintId = req.params.sprintId;
   try {
-    const removedSprint = await Sprint.removeSprintAndTasks(sprintId);
-    if (removedSprint) {
-      return res.status(HttpCode.OK).json({
-        status: "success",
-        code: HttpCode.OK,
-        message: "sprint was deleted",
-        data: {
-          sprint: removedSprint,
-        },
-      });
+    const sprintOwner = await Sprint.checkIsSprintOwner(curentUserId, sprintId);
+
+    if (sprintOwner) {
+      const removedSprint = await Sprint.removeSprintAndTasks(sprintId);
+
+      if (removedSprint) {
+        return res.status(HttpCode.OK).json({
+          status: "success",
+          code: HttpCode.OK,
+          message: "sprint was deleted",
+          data: {
+            sprint: removedSprint,
+          },
+        });
+      }
     }
     return res.status(HttpCode.NOT_FOUND).json({
       status: "not found",
       code: HttpCode.NOT_FOUND,
-      message: "sprint was not deleted",
+      message: "only owner can delete sprint",
     });
   } catch (err) {
     next(err.message);

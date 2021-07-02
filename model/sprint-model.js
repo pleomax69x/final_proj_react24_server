@@ -1,18 +1,25 @@
+const Project = require("./schemas/project-schema");
 const Sprint = require("./schemas/sprint-schema");
 const Tasks = require("./task-model");
+const User = require("./user-model");
 
-const createSprint = async (body, projectId) => {
-  if (body && projectId) {
-    const data = {
-      ...body,
-      projectId,
-    };
-    try {
-      const sprintData = await new Sprint(data);
-      return await sprintData.save();
-    } catch (err) {
-      return err.message;
-    }
+const checkIsSprintOwner = async (userId, sprintId) => {
+  const finedUser = await User.findById(userId);
+  const findSprint = await getSprintById(sprintId);
+  const { projectId } = findSprint;
+  const findProject = await Project.findById(projectId);
+  const { _id } = finedUser;
+  const { owner } = findProject;
+  const isOwner = _id.toString() === owner.toString();
+  return isOwner;
+};
+
+const createSprint = async (data) => {
+  try {
+    const sprintData = await new Sprint(data);
+    return await sprintData.save();
+  } catch (err) {
+    return err.message;
   }
 };
 
@@ -78,4 +85,5 @@ module.exports = {
   getAllSprints,
   getSprintById,
   removeSprintAndTasks,
+  checkIsSprintOwner,
 };

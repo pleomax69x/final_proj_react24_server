@@ -26,6 +26,11 @@ const taskSchema = new Schema(
       required: [true, "sprint id is required"],
       ref: "sprint",
     },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: [true, "user id is required"],
+      ref: "user",
+    },
   },
   {
     versionKey: false,

@@ -20,6 +20,11 @@ const sprintSchema = new Schema(
       required: [true, "project id is required"],
       ref: "project",
     },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: [true, "user id is required"],
+      ref: "user",
+    },
   },
   {
     versionKey: false,

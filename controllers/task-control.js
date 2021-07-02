@@ -6,12 +6,21 @@ require("dotenv").config();
 
 const addTask = async (req, res, next) => {
   const sprintId = req.params.sprintId;
+  const currentUser = req.user.id;
+
   try {
     const checkSprint = await Sprint.getSprintById(sprintId);
 
     if (checkSprint) {
-      const newTask = await Task.createTask(req.body, sprintId);
-      const { _id, title, scheduledHours } = newTask;
+      const data = {
+        ...req.body,
+        createdBy: currentUser,
+        sprintId,
+      };
+
+      const newTask = await Task.createTask(data);
+
+      const { _id, title, scheduledHours, createdBy } = newTask;
 
       if (_id) {
         return res.status(HttpCode.CREATED).json({
@@ -23,15 +32,21 @@ const addTask = async (req, res, next) => {
               title,
               scheduledHours,
               sprintId,
+              createdBy,
             },
           },
         });
-      }
+      } else
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+          status: "Error",
+          code: HttpCode.INTERNAL_SERVER_ERROR,
+          message: "task was not created",
+        });
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: "Error",
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: "sprint does not exist",
+      message: "sprint was not found",
     });
   } catch (err) {
     next(err.message);
