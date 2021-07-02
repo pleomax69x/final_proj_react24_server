@@ -8,7 +8,7 @@ const getProjectById = async (projectId) => {
   return await Project.findOne({ _id: projectId });
 }
 
-const getAllProjects = async (userId, query) => {
+const getAllProjects = async (userId, projectsId, query) => {
   const {
     limit = 12,
     page = 1,
@@ -18,6 +18,8 @@ const getAllProjects = async (userId, query) => {
   } = query
 
   const optionsSearch = { owner: userId }
+  // когда будет готова функция добавления человека в проект
+  //const optionsSearch = { _id: projectsId }
 
   const results = await Project.paginate(optionsSearch, {
     limit,

@@ -53,10 +53,10 @@ const addSprint = async (req, res, next) => {
 };
 
 const removeSprint = async (req, res, next) => {
-  const curentUserId = req.user.id;
+  const currentUserId = req.user.id;
   const sprintId = req.params.sprintId;
   try {
-    const sprintOwner = await Sprint.checkIsSprintOwner(curentUserId, sprintId);
+    const sprintOwner = await Sprint.checkIsSprintOwner(currentUserId, sprintId);
 
     if (sprintOwner) {
       const removedSprint = await Sprint.removeSprintAndTasks(sprintId);

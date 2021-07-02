@@ -2,14 +2,15 @@ const Projects = require("../model/project-model")
 const Users = require("../model/user-model")
 const { HttpCode } = require("../helpers/constants")
 const Sprints = require("../model/sprint-model")
+const User = require("../model/schemas/user-schema")
 
 const create = async (req, res, next) => {
   const userId = req.user.id
   const body = req.body
   try {
     const project = await Projects.createProject({ ...body, owner: userId })
-    //const member = await Users.addProjectToUser({userId, projectId: project.id })
-    //console.log(member);
+    //const teammate = await Users.addUserToProject({userId, projectId: project.id })
+    //console.log(teammate);
       return res.status(HttpCode.CREATED).json({
       status: "created",
       code: HttpCode.CREATED,
@@ -26,9 +27,12 @@ const create = async (req, res, next) => {
 
 const getAll = async (req, res, next) => {
   const userId = req.user.id;
+  const projectsId = req.user.projectsId;
   try {
+    
     const { projects, total, limit, page } = await Projects.getAllProjects(
       userId,
+      projectsId,
       req.query
     );
     if (projects) {
@@ -55,11 +59,17 @@ const remove = async (req, res, next) => {
     const owner = await Projects.isOwner(userId);
     if (owner) {
       const projectSprints = await Sprints.getAllSprints(projectId);
-
-      const result = projectSprints.map(async (sprint) => {
-        const result = await Sprints.removeSprintAndTasks(sprint._id);
-        return result;
-      });
+      projectSprints.map(async (sprint) => {
+        return await Sprints.removeSprintAndTasks(sprint._id)
+      })
+      
+      const removeUser = await Users.removeUserFromProject(userId, projectId)
+      if (removeUser) {
+        console.log("User removed from project")
+      }
+      else {
+        console.log("User are not removed")
+      }
 
       const project = await Projects.removeProject(userId, projectId);
       if (project) {
