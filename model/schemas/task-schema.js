@@ -16,15 +16,15 @@ const taskSchema = new Schema(
       required: false,
       default: 0,
     },
-    totalHours: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     sprintId: {
       type: SchemaTypes.ObjectId,
       required: [true, "sprint id is required"],
       ref: "sprint",
+    },
+    projectOwnerId: {
+      type: SchemaTypes.ObjectId,
+      required: [true, "project owner id is required"],
+      ref: "user",
     },
     createdBy: {
       type: SchemaTypes.ObjectId,
