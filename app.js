@@ -7,8 +7,9 @@ const swaggerDocument = require("./swagger.json");
 
 const userRouter = require("./routes/users/user-routes");
 const projectRouter = require("./routes/projects/project-routes");
-const sprintRouter = require("./routes/sprints/sprint-router");
-const taskRouter = require("./routes/tasks/task-router");
+const sprintRouter = require("./routes/sprints/sprint-routes");
+const taskRouter = require("./routes/tasks/task-routes");
+const teammateRouter = require("./routes/teammate/teamate-routes");
 
 const { HttpCode } = require("./helpers/constants");
 
@@ -26,6 +27,7 @@ app.use("", userRouter);
 app.use("/projects", projectRouter);
 app.use("/sprints", sprintRouter);
 app.use("/tasks", taskRouter);
+app.use("/teammate", teammateRouter);
 
 app.use((err, _req, res, _next) => {
   const code = err.code || HttpCode.NOT_FOUND;
