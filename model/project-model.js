@@ -29,8 +29,9 @@ const getAllProjects = async (userId, projectsId, query) => {
   return { projects, total, limit, page };
 };
 
-const isOwner = async (userId) => {
-  return await Project.findOne({ owner: userId });
+const isOwner = async (projectId, userId) => {
+  const project = await getProjectById(projectId);
+  return project.owner.toString() === userId;
 };
 
 const removeProject = async (userId, projectId) => {

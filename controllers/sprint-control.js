@@ -8,34 +8,23 @@ const addSprint = async (req, res, next) => {
   const projectId = req.params.projectId;
   const currentUser = req.user.id;
   try {
-    const checkedProject = await Project.getProjectById(projectId);
+    const isOwner = await Project.isOwner(projectId, currentUser);
+    console.log("isOwner", isOwner);
 
-    if (checkedProject) {
+    if (isOwner) {
       const data = {
         ...req.body,
-        createdBy: currentUser,
         projectId,
-        projectOwnerId: checkedProject.owner,
+        projectOwnerId: currentUser,
       };
       const newSprint = await Sprint.createSprint(data);
 
-      const { _id, title, date, duration, createdBy, projectOwnerId } =
-        newSprint;
-
-      if (_id) {
+      if (newSprint._id) {
         return res.status(HttpCode.CREATED).json({
           status: "Created",
           code: HttpCode.CREATED,
           data: {
-            sprint: {
-              id: _id,
-              title,
-              date,
-              duration,
-              projectId,
-              projectOwnerId,
-              createdBy,
-            },
+            sprint: newSprint,
           },
         });
       }
@@ -48,7 +37,7 @@ const addSprint = async (req, res, next) => {
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: "Error",
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: "project was not found",
+      message: "only project owner can add sprint",
     });
   } catch (err) {
     next(err.message);
@@ -56,7 +45,7 @@ const addSprint = async (req, res, next) => {
 };
 
 const removeSprint = async (req, res, next) => {
-  const currentUserId = req.user.id;
+  const currentUser = req.user.id;
   const sprintId = req.params.sprintId;
 
   try {
@@ -64,7 +53,7 @@ const removeSprint = async (req, res, next) => {
 
     if (sprint) {
       const isOwner = await Sprint.checkIsOwner(
-        currentUserId,
+        currentUser,
         sprint.projectOwnerId
       );
       if (isOwner) {
