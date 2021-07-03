@@ -154,12 +154,14 @@ const getAllSprints = async (req, res, next) => {
 
     if (checkedProject._id) {
       const sprints = await Sprint.getAllSprints(projectId);
+      const project = await Project.getProjectById(projectId);
 
       if (sprints) {
         return res.status(HttpCode.OK).json({
           status: "success",
           code: HttpCode.OK,
           data: {
+            project,
             sprints,
           },
         });

@@ -2,12 +2,7 @@ const Joi = require("joi");
 const { HttpCode } = require("../../helpers/constants");
 
 const schemaAddTeammate = Joi.object({
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: false },
-    })
-    .required(),
+  email: Joi.string().required(),
   projectId: Joi.string().required(),
 });
 
@@ -15,9 +10,17 @@ const schemaDelTeammate = Joi.object({
   teammeteId: Joi.string().required(),
 });
 
-const addValidate = async (schema, body, next) => {
+const addValidate = async (
+  schema,
+  { body: { email }, params: { projectId } },
+  next
+) => {
   try {
-    await schema.validateAsync(body);
+    const data = {
+      email,
+      projectId,
+    };
+    await schema.validateAsync(data);
     next();
   } catch (err) {
     next({
@@ -41,7 +44,7 @@ const delValidate = async (schema, { teammateId }, next) => {
 };
 
 module.exports.validateAddTeammate = (req, _res, next) => {
-  return addValidate(schemaAddTeammate, req.body, next);
+  return addValidate(schemaAddTeammate, req, next);
 };
 
 module.exports.validateDelTeammate = (req, _res, next) => {

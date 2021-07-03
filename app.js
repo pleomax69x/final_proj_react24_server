@@ -7,8 +7,8 @@ const swaggerDocument = require("./swagger.json");
 
 const userRouter = require("./routes/users/user-routes");
 const projectRouter = require("./routes/projects/project-routes");
-const sprintRouter = require("./routes/sprints/sprint-router");
-const taskRouter = require("./routes/tasks/task-router");
+const sprintRouter = require("./routes/sprints/sprint-routes");
+const taskRouter = require("./routes/tasks/task-routes");
 const teammateRouter = require("./routes/teammate/teamate-routes");
 
 const { HttpCode } = require("./helpers/constants");

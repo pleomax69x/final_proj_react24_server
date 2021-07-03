@@ -1,39 +1,61 @@
 const Project = require("../model/project-model");
-const Teammate = require("../model/teammate-model");
+const User = require("../model/user-model");
 
 const { HttpCode } = require("../helpers/constants");
 require("dotenv").config();
 
-const addTeammate = async (req, res, next) => {};
-const getAllTeammates = async (req, res, next) => {
+const addTeammate = async (req, res, next) => {
   const projectId = req.params.projectId;
-
   try {
-    const checkProject = await Project.getProjectById(projectId);
+    const checkUser = await User.findByEmail(req.body.email);
+    const curentProject = await Project.getProjectById(projectId);
 
-    if (checkProject) {
-      const teammates = await Teammate.getAllTeammate(projectId);
-      const project = await Project.getProjectById(projectId);
+    if (checkUser) {
+      const { projectsId, _id } = checkUser;
+      const { teammatesId } = curentProject;
 
-      if (project) {
-        return res.status(HttpCode.OK).json({
-          status: "success",
-          code: HttpCode.OK,
+      const checkProjectTeammateList = teammatesId.find((el) => {
+        return el.toString() === _id.toString();
+      });
+
+      if (!checkProjectTeammateList) {
+        const checkUserProjectsList = projectsId.find((el) => {
+          return el === projectId;
+        });
+
+        if (!checkUserProjectsList) {
+          await User.addProjectToUser(checkUser._id, projectId);
+        }
+
+        await Project.addTeammateToProject(checkUser._id, projectId);
+
+        const project = await Project.getProjectById(projectId);
+        return res.status(HttpCode.CREATED).json({
+          status: "created",
+          code: HttpCode.CREATED,
+          message: "user was added",
           data: {
             project,
-            teammates,
+            user: {
+              email: checkUser.email,
+              id: checkUser._id,
+            },
           },
         });
       }
+      return res.status(HttpCode.FORBIDDEN).json({
+        status: "forbidden",
+        code: HttpCode.FORBIDDEN,
+        message: "already in project",
+      });
     }
-
     return res.status(HttpCode.NOT_FOUND).json({
-      status: "not found",
+      status: "error",
       code: HttpCode.NOT_FOUND,
-      message: "project not found",
+      message: "user was not found",
     });
   } catch (err) {
-    next(err);
+    next(err.message);
   }
 };
 
@@ -41,6 +63,5 @@ const removeTeammate = async (req, res, next) => {};
 
 module.exports = {
   addTeammate,
-  getAllTeammates,
   removeTeammate,
 };

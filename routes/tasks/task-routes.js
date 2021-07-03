@@ -10,31 +10,12 @@ const {
   validateChangeTask,
 } = require("./validation");
 
-router.post(
-  "/:sprintId",
-  guard,
-  validateCreateTask,
-  ctrl.addTask
-);
+router.post("/:sprintId", guard, validateCreateTask, ctrl.addTask);
 
-router.delete(
-  "/:taskId",
-  guard,
-  validateDeleteTask,
-  ctrl.deleteTask
-);
+router.delete("/:taskId", guard, validateDeleteTask, ctrl.deleteTask);
 
-router.get(
-  "/:sprintId",
-  guard,
-  validateGetTasks,
-  ctrl.getAllTasks
-);
+router.get("/:sprintId", guard, validateGetTasks, ctrl.getAllTasks);
 
-router.patch(
-  "/:taskId",
-  validateChangeTask,
-  ctrl.changeTask
-);
+router.patch("/:taskId", validateChangeTask, ctrl.changeTask);
 
 module.exports = router;
