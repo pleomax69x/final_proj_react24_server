@@ -9,18 +9,19 @@ const addTask = async (req, res, next) => {
   const currentUser = req.user.id;
 
   try {
-    const checkSprint = await Sprint.getSprintById(sprintId);
+    const sprint = await Sprint.getSprintById(sprintId);
 
-    if (checkSprint) {
+    if (sprint) {
       const data = {
         ...req.body,
         createdBy: currentUser,
+        projectOwnerId: sprint.projectOwnerId,
         sprintId,
       };
 
       const newTask = await Task.createTask(data);
 
-      const { _id, title, scheduledHours, createdBy } = newTask;
+      const { _id, title, scheduledHours, createdBy, projectOwnerId } = newTask;
 
       if (_id) {
         return res.status(HttpCode.CREATED).json({
@@ -33,6 +34,7 @@ const addTask = async (req, res, next) => {
               scheduledHours,
               sprintId,
               createdBy,
+              projectOwnerId,
             },
           },
         });
@@ -54,31 +56,53 @@ const addTask = async (req, res, next) => {
 };
 
 const deleteTask = async (req, res, next) => {
+  const currentUserId = req.user.id;
+  const taskId = req.params.taskId;
   try {
-    const taskId = req.params.taskId;
-    const deletedTask = await Task.removeTask(taskId);
+    const task = await Task.findById(taskId);
 
-    if (deletedTask) {
-      const { _id, title, sprintId } = deletedTask;
-      return res.status(HttpCode.OK).json({
-        status: "success",
-        code: HttpCode.OK,
-        message: "task was deleted",
-        data: {
-          task: {
-            id: _id,
-            title,
-            sprintId,
-          },
-        },
-      });
-    } else {
-      return res.status(HttpCode.NOT_FOUND).json({
+    if (task._id) {
+      const isOwner = await Sprint.checkIsOwner(
+        currentUserId,
+        task.projectOwnerId
+      );
+
+      if (isOwner) {
+        const deletedTask = await Task.removeTask(taskId);
+
+        if (deletedTask._id) {
+          const { _id, title, sprintId } = deletedTask;
+          return res.status(HttpCode.OK).json({
+            status: "success",
+            code: HttpCode.OK,
+            message: "task was deleted",
+            data: {
+              task: {
+                id: _id,
+                title,
+                sprintId,
+              },
+            },
+          });
+        } else {
+          return res.status(HttpCode.NOT_FOUND).json({
+            status: "error",
+            code: HttpCode.NOT_FOUND,
+            message: "task was not deleted",
+          });
+        }
+      }
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
         status: "error",
-        code: HttpCode.NOT_FOUND,
-        message: "task was not deleted",
+        code: HttpCode.INTERNAL_SERVER_ERROR,
+        message: "only project owner can delete task",
       });
     }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "not found",
+      code: HttpCode.NOT_FOUND,
+      message: "task was not found",
+    });
   } catch (err) {
     next(err);
   }
