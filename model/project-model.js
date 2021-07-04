@@ -32,7 +32,15 @@ const isOwner = async (projectId, userId) => {
   return project.owner.toString() === userId
 }
 
-// const isTeammate = async()
+const isTeammate = async (userId, projectId) => {
+  const result = await Project.findOne({
+    _id: projectId,
+    teammates: {
+      $elemMatch: { id: userId },
+    },
+  })
+  return result
+}
 
 const removeProject = async (userId, projectId) => {
   return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
@@ -66,4 +74,5 @@ module.exports = {
   updateProjectName,
   isOwner,
   addTeammateToProject,
+  isTeammate,
 }
