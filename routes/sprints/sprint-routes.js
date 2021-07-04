@@ -1,41 +1,23 @@
-const express = require("express");
-const router = express.Router();
-const ctrl = require("../../controllers/sprint-control");
-const guard = require("../../helpers/guard");
+const express = require('express')
+const router = express.Router()
+const ctrl = require('../../controllers/sprint-control')
+const guard = require('../../helpers/guard')
 
 const {
   validateCreateSprint,
   validateRemoveSprint,
   validateChangeSprintTitle,
   validateGetSprints,
-} = require("../sprints/validation");
+} = require('../sprints/validation')
 
-router.post(
-  "/:projectId",
-  guard,
-  validateCreateSprint,
-  ctrl.addSprint
-);
-
-router.delete(
-  "/:sprintId",
-  guard,
-  validateRemoveSprint,
-  ctrl.removeSprint
-);
-
+router.post('/:projectId', guard, validateCreateSprint, ctrl.addSprint)
+router.delete('/:sprintId', guard, validateRemoveSprint, ctrl.removeSprint)
 router.patch(
-  "/:sprintId",
+  '/:sprintId',
   guard,
   validateChangeSprintTitle,
-  ctrl.changeSprintName
-);
+  ctrl.changeSprintName,
+)
+router.get('/:projectId', guard, validateGetSprints, ctrl.getAllSprints)
 
-router.get(
-  "/:projectId",
-  guard,
-  validateGetSprints,
-  ctrl.getAllSprints
-);
-
-module.exports = router;
+module.exports = router

@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
-require("dotenv").config();
-const uriDb = process.env.DB_HOST;
+require('dotenv').config()
+const uriDb = process.env.DB_HOST
 
 const db = mongoose.connect(uriDb, {
   useNewUrlParser: true,
@@ -9,26 +9,26 @@ const db = mongoose.connect(uriDb, {
   useCreateIndex: true,
   useFindAndModify: false,
   poolSize: 5,
-});
+})
 
-mongoose.connection.on("connected", () => {
-  console.log("Mongose: Database connection successful");
-});
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose: Database connection successful')
+})
 
-mongoose.connection.on("error", (err) => {
-  console.log(`Mongoose connection error: ${err.message}`);
-  process.exit(1);
-});
+mongoose.connection.on('error', err => {
+  console.log(`Mongoose connection error: ${err.message}`)
+  process.exit(1)
+})
 
-mongoose.connection.on("disconected", () => {
-  console.log("Mongoose disconected");
-});
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected')
+})
 
-process.on("SIGINT", async () => {
+process.on('SIGINT', async () => {
   mongoose.connection.close(() => {
-    console.log("Disconect MongoDB");
-    process.exit();
-  });
-});
+    console.log('Disconnect MongoDB')
+    process.exit()
+  })
+})
 
-module.exports = db;
+module.exports = db

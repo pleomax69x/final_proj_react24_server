@@ -1,54 +1,54 @@
-const Tasks = require("./schemas/task-schema");
+const Tasks = require('./schemas/task-schema')
 
-const findById = async (id) => {
-  return await Tasks.findOne({ _id: id });
-};
+const findById = async id => {
+  return await Tasks.findOne({ _id: id })
+}
 
-const createTask = async (data) => {
+const createTask = async data => {
   try {
-    const newTask = await new Tasks(data);
-    return await newTask.save();
+    const newTask = await new Tasks(data)
+    return await newTask.save()
   } catch (err) {
-    return err.message;
+    return err.message
   }
-};
+}
 
-const removeTask = async (taskId) => {
+const removeTask = async taskId => {
   if (taskId) {
     try {
       const task = await Tasks.findByIdAndRemove({
         _id: taskId,
-      });
-      return task;
+      })
+      return task
     } catch (err) {
-      return err.message;
+      return err.message
     }
   }
-};
+}
 
-const removeAllTasksBySprintId = async (sprintId) => {
+const removeAllTasksBySprintId = async sprintId => {
   if (sprintId) {
     try {
       const removedTasks = await Tasks.deleteMany({
         sprintId: sprintId,
-      });
-      return removedTasks;
+      })
+      return removedTasks
     } catch (err) {
-      return err.message;
+      return err.message
     }
   }
-};
+}
 
-const getAllTaskBySprintId = async (sprintId) => {
+const getAllTaskBySprintId = async sprintId => {
   if (sprintId) {
     try {
-      const tasks = await Tasks.find({ sprintId: sprintId });
-      return tasks;
+      const tasks = await Tasks.find({ sprintId: sprintId })
+      return tasks
     } catch (err) {
-      return err.message;
+      return err.message
     }
   }
-};
+}
 
 const changeTaskById = async (body, taskId) => {
   if (taskId) {
@@ -56,14 +56,14 @@ const changeTaskById = async (body, taskId) => {
       const changedTask = await Tasks.findOneAndUpdate(
         { _id: taskId },
         { ...body },
-        { new: true }
-      );
-      return changedTask;
+        { new: true },
+      )
+      return changedTask
     } catch (err) {
-      return err.message;
+      return err.message
     }
   }
-};
+}
 
 module.exports = {
   findById,
@@ -72,4 +72,4 @@ module.exports = {
   removeAllTasksBySprintId,
   getAllTaskBySprintId,
   changeTaskById,
-};
+}

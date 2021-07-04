@@ -1,8 +1,6 @@
-const Project = require('../model/project-model')
 const User = require('../model/user-model')
-
+const Project = require('../model/project-model')
 const { HttpCode } = require('../helpers/constants')
-require('dotenv').config()
 
 const addTeammate = async (req, res, next) => {
   const projectId = req.params.projectId
@@ -43,10 +41,10 @@ const addTeammate = async (req, res, next) => {
           },
         })
       }
-      return res.status(HttpCode.FORBIDDEN).json({
-        status: 'forbidden',
-        code: HttpCode.FORBIDDEN,
-        message: 'already in project',
+      return res.status(HttpCode.CONFLICT).json({
+        status: 'conflict',
+        code: HttpCode.CONFLICT,
+        message: 'user already in project',
       })
     }
     return res.status(HttpCode.NOT_FOUND).json({

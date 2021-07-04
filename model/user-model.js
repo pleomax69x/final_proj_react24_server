@@ -8,6 +8,12 @@ const findByEmail = async email => {
   return await User.findOne({ email })
 }
 
+const findByProjectsId = async (userId, projectId) => {
+  const user = await findById(userId)
+  const projectsId = user.projectsId
+  return projectsId.find(id => id === projectId)
+}
+
 const createUser = async data => {
   const user = await new User(data)
   return await user.save()
@@ -24,12 +30,6 @@ const addProjectToUser = async (userId, projectId) => {
   )
 }
 
-const findByProjectsId = async (userId, projectId) => {
-  const user = await findById(userId)
-  const projectsId = user.projectsId
-  return projectsId.find(id => id === projectId)
-}
-
 const removeProjectFromUser = async (userId, projectId) => {
   const user = await findById(userId)
   const projectsId = user.projectsId
@@ -44,10 +44,10 @@ const updateUserProjects = async (userId, projectsId) => {
 module.exports = {
   findById,
   findByEmail,
+  findByProjectsId,
   createUser,
   updateToken,
   addProjectToUser,
-  findByProjectsId,
   removeProjectFromUser,
   updateUserProjects,
 }

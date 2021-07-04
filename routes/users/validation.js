@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const { HttpCode } = require("../../helpers/constants");
+const Joi = require('joi')
+const { HttpCode } = require('../../helpers/constants')
 
 const schemaUser = Joi.object({
   email: Joi.string()
@@ -16,21 +16,21 @@ const schemaUser = Joi.object({
     .max(30)
     .regex(/[A-Z]\w+/)
     .required(),
-});
+})
 
 const validate = async (schema, body, next) => {
   try {
-    await schema.validateAsync(body);
-    next();
+    await schema.validateAsync(body)
+    next()
   } catch (err) {
     next({
-      status: HttpCode.BAD_REQUEST,
+      status: 'error',
       code: HttpCode.BAD_REQUEST,
-      message: err.message
-    });
+      message: err.message,
+    })
   }
-};
+}
 
 module.exports.validateUser = (req, _res, next) => {
-  return validate(schemaUser, req.body, next);
-};
+  return validate(schemaUser, req.body, next)
+}

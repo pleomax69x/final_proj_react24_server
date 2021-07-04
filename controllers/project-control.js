@@ -7,15 +7,14 @@ const create = async (req, res, next) => {
   const userId = req.user.id
   const body = req.body
   try {
-    const project = await Projects.createProject({ ...body, owner: userId })
-    const teammate = await Users.addUserToProject({
-      userId,
-      projectId: project.id,
+    const project = await Projects.createProject({
+      ...body,
+      owner: userId,
+      teammatesId: userId,
     })
-    teammate
-      ? console.log('Added to teammates')
-      : console.log('Not added to teammates')
+
     if (project) {
+      await Users.addProjectToUser(userId, project.id)
       return res.status(HttpCode.CREATED).json({
         status: 'created',
         code: HttpCode.CREATED,
@@ -23,9 +22,9 @@ const create = async (req, res, next) => {
       })
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
-      status: 'error',
+      status: 'fail',
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: 'Project was not created',
+      message: 'project was not created',
     })
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -42,6 +41,7 @@ const getAll = async (req, res, next) => {
       projectsId,
       req.query,
     )
+
     if (projects) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -52,7 +52,7 @@ const getAll = async (req, res, next) => {
     return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
       code: HttpCode.NOT_FOUND,
-      message: 'Projects list is empty',
+      message: 'projects list is empty',
     })
   } catch (err) {
     next(err)
@@ -63,39 +63,52 @@ const remove = async (req, res, next) => {
   const userId = req.user.id
   const projectId = req.params.projectId
   try {
-    const owner = await Projects.isOwner(projectId, userId)
+    const project = await Projects.getProjectById(projectId)
 
-    if (owner) {
-      const projectSprints = await Sprints.getAllSprints(projectId)
-      projectSprints.map(async sprint => {
-        return await Sprints.removeSprintAndTasks(sprint._id)
-      })
+    if (project) {
+      const isOwner = await Projects.isOwner(projectId, userId)
 
-      const removeUser = await Users.removeUserFromProject(userId, projectId)
-      if (removeUser) {
-        console.log('User removed from project')
-      } else {
-        console.log('User are not removed')
-      }
+      if (isOwner) {
+        const projectSprints = await Sprints.getAllSprints(projectId)
 
-      const project = await Projects.removeProject(userId, projectId)
-      if (project) {
-        return res.status(HttpCode.OK).json({
-          status: 'success',
-          code: HttpCode.OK,
-          message: 'Project was deleted',
+        if (projectSprints) {
+          projectSprints.map(async sprint => {
+            return await Sprints.removeSprintAndTasks(sprint._id)
+          })
+          console.log('sprints & tasks was deleted')
+        }
+        console.log('there were no sprints in the project')
+
+        const removeUsers = await Users.removeUserFromProject(userId, projectId)
+        removeUsers
+          ? console.log('User removed from project')
+          : console.log('User are not removed')
+
+        const removeProject = await Projects.removeProject(userId, projectId)
+
+        if (removeProject) {
+          return res.status(HttpCode.OK).json({
+            status: 'success',
+            code: HttpCode.OK,
+            message: 'project was deleted',
+          })
+        }
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+          status: 'fail',
+          code: HttpCode.INTERNAL_SERVER_ERROR,
+          message: 'project was not deleted',
         })
       }
-      return res.status(HttpCode.NOT_FOUND).json({
+      return res.status(HttpCode.FORBIDDEN).json({
         status: 'error',
-        code: HttpCode.NOT_FOUND,
-        message: 'Project not found',
+        code: HttpCode.FORBIDDEN,
+        message: 'only owner can delete the project',
       })
     }
-    return res.status(HttpCode.FORBIDDEN).json({
+    return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
-      code: HttpCode.FORBIDDEN,
-      message: 'Forbidden',
+      code: HttpCode.NOT_FOUND,
+      message: 'project was not found',
     })
   } catch (err) {
     next(err)
@@ -107,24 +120,38 @@ const patch = async (req, res, next) => {
   const projectId = req.params.projectId
   const body = req.body
   try {
-    const owner = await Projects.isOwner(projectId, userId)
-    if (owner) {
-      const project = await Projects.updateProjectName(userId, projectId, body)
-      if (project) {
-        return res
-          .status(HttpCode.OK)
-          .json({ status: 'success', code: HttpCode.OK, data: { project } })
+    const project = await Projects.getProjectById(projectId)
+
+    if (project) {
+      const isOwner = await Projects.isOwner(projectId, userId)
+
+      if (isOwner) {
+        const changedProjectName = await Projects.updateProjectName(
+          userId,
+          projectId,
+          body,
+        )
+        if (changedProjectName) {
+          return res
+            .status(HttpCode.OK)
+            .json({ status: 'success', code: HttpCode.OK, data: { project } })
+        }
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+          status: 'fail',
+          code: HttpCode.INTERNAL_SERVER_ERROR,
+          message: 'project name was not changed',
+        })
       }
-      return res.status(HttpCode.NOT_FOUND).json({
+      return res.status(HttpCode.FORBIDDEN).json({
         status: 'error',
-        code: HttpCode.NOT_FOUND,
-        message: 'Project not found',
+        code: HttpCode.FORBIDDEN,
+        message: 'only owner can change the project name',
       })
     }
-    return res.status(HttpCode.FORBIDDEN).json({
+    return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
-      code: HttpCode.FORBIDDEN,
-      message: 'Forbidden',
+      code: HttpCode.NOT_FOUND,
+      message: 'project was not found',
     })
   } catch (err) {
     next(err)
@@ -136,8 +163,10 @@ const checkAccess = async (req, res, next) => {
   const projectId = req.params.projectId
   try {
     const project = await Projects.getProjectById(projectId)
+
     if (project) {
       const teammate = await Users.findByProjectsId(userId, projectId)
+
       if (teammate) {
         return res.status(HttpCode.OK).json({
           status: 'success',
@@ -148,13 +177,13 @@ const checkAccess = async (req, res, next) => {
       return res.status(HttpCode.FORBIDDEN).json({
         status: 'error',
         code: HttpCode.FORBIDDEN,
-        message: 'Forbidden',
+        message: 'forbidden, not a teammate',
       })
     }
     return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
       code: HttpCode.NOT_FOUND,
-      message: 'Project not found',
+      message: 'project not found',
     })
   } catch (err) {
     next(err)
