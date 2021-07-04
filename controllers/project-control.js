@@ -19,8 +19,6 @@ const create = async (req, res, next) => {
       ],
     })
 
-    console.log(project)
-
     if (project) {
       await Users.addProjectToUser(userId, project.id)
       return res.status(HttpCode.CREATED).json({

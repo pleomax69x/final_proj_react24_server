@@ -1,5 +1,6 @@
 const Project = require('../model/project-model')
 const Sprint = require('../model/sprint-model')
+
 const { HttpCode } = require('../helpers/constants')
 
 const addSprint = async (req, res, next) => {
@@ -7,7 +8,6 @@ const addSprint = async (req, res, next) => {
   const currentUser = req.user.id
   try {
     const isOwner = await Project.isOwner(projectId, currentUser)
-    console.log('isOwner', isOwner)
 
     if (isOwner) {
       const data = {
@@ -49,7 +49,7 @@ const removeSprint = async (req, res, next) => {
   try {
     const sprint = await Sprint.getSprintById(sprintId)
 
-    if (sprint) {
+    if (sprint._id) {
       const isOwner = await Sprint.checkIsOwner(
         currentUser,
         sprint.projectOwnerId,
@@ -144,15 +144,18 @@ const changeSprintName = async (req, res, next) => {
 }
 
 const getAllSprints = async (req, res, next) => {
+  const currentUserId = req.user.id
   const projectId = req.params.projectId
 
   try {
     const project = await Project.getProjectById(projectId)
 
     if (project._id) {
-      const sprints = await Sprint.getAllSprints(projectId)
+      const isTeammate = await Project.isTeammate(currentUserId, projectId)
 
-      if (sprints) {
+      if (isTeammate) {
+        const sprints = await Sprint.getAllSprints(projectId)
+
         return res.status(HttpCode.OK).json({
           status: 'success',
           code: HttpCode.OK,
@@ -162,13 +165,12 @@ const getAllSprints = async (req, res, next) => {
           },
         })
       }
-      return res.status(HttpCode.NOT_FOUND).json({
-        status: 'error',
-        code: HttpCode.NOT_FOUND,
-        message: 'sprints list is empty',
+      return res.status(HttpCode.FORBIDDEN).json({
+        status: 'forbidden',
+        code: HttpCode.FORBIDDEN,
+        message: 'only teammate have access',
       })
     }
-
     return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
       code: HttpCode.NOT_FOUND,
