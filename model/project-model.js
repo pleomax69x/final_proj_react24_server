@@ -32,6 +32,8 @@ const isOwner = async (projectId, userId) => {
   return project.owner.toString() === userId
 }
 
+// const isTeammate = async()
+
 const removeProject = async (userId, projectId) => {
   return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
 }
@@ -44,10 +46,15 @@ const updateProjectName = async (userId, projectId, body) => {
   )
 }
 
-const addTeammateToProject = async (userId, projectId) => {
+const addTeammateToProject = async (user, projectId) => {
+  const data = {
+    email: user.email,
+    id: user._id,
+  }
+
   return await Project.updateOne(
     { _id: projectId },
-    { $push: { teammatesId: userId } },
+    { $push: { teammates: data } },
   )
 }
 

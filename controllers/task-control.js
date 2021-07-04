@@ -9,7 +9,7 @@ const addTask = async (req, res, next) => {
   try {
     const sprint = await Sprint.getSprintById(sprintId)
 
-    if (sprint) {
+    if (sprint._id) {
       const data = {
         ...req.body,
         createdBy: currentUser,

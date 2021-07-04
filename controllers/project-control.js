@@ -6,12 +6,20 @@ const Sprints = require('../model/sprint-model')
 const create = async (req, res, next) => {
   const userId = req.user.id
   const body = req.body
+  const email = req.user.email
   try {
     const project = await Projects.createProject({
       ...body,
       owner: userId,
-      teammatesId: userId,
+      teammates: [
+        {
+          email,
+          id: userId,
+        },
+      ],
     })
+
+    console.log(project)
 
     if (project) {
       await Users.addProjectToUser(userId, project.id)

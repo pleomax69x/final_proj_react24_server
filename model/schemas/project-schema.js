@@ -16,7 +16,7 @@ const projectSchema = new Schema(
       type: SchemaTypes.ObjectId,
       ref: 'user',
     },
-    teammatesId: {
+    teammates: {
       type: Array,
       default: [],
     },
