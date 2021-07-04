@@ -41,6 +41,14 @@ const updateUserProjects = async (userId, projectsId) => {
   return await User.updateOne({ _id: userId }, { projectsId }, { new: true })
 }
 
+const removeProjectFromAllUsers = async (teammatesId, projectId) => {
+  const users = await User.find({ _id: { $in: teammatesId } })
+
+  return await users.map(user => {
+    removeProjectFromUser(user.id, projectId)
+  })
+}
+
 module.exports = {
   findById,
   findByEmail,
@@ -50,4 +58,5 @@ module.exports = {
   addProjectToUser,
   removeProjectFromUser,
   updateUserProjects,
+  removeProjectFromAllUsers,
 }
