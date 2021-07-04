@@ -1,37 +1,37 @@
-const { Schema, SchemaTypes, model } = require("mongoose");
+const { Schema, SchemaTypes, model } = require('mongoose')
 
 const sprintSchema = new Schema(
   {
     title: {
       type: String,
-      required: [true, "Title is required"],
+      required: [true, 'Title is required'],
       index: true, // too speedup search by title
     },
     date: {
       type: String,
-      required: [true, "Date is required"],
+      required: [true, 'Date is required'],
     },
     duration: {
       type: Number,
-      required: [true, "Duration is required"],
+      required: [true, 'Duration is required'],
     },
     projectId: {
       type: SchemaTypes.ObjectId,
-      required: [true, "project id is required"],
-      ref: "project",
+      required: [true, 'project id is required'],
+      ref: 'project',
     },
     projectOwnerId: {
       type: SchemaTypes.ObjectId,
-      required: [true, "project owner id is required"],
-      ref: "user",
+      required: [true, 'project owner id is required'],
+      ref: 'user',
     },
   },
   {
     versionKey: false,
     timestamps: true,
-  }
-);
+  },
+)
 
-const Sprint = model("sprint", sprintSchema);
+const Sprint = model('sprint', sprintSchema)
 
-module.exports = Sprint;
+module.exports = Sprint
