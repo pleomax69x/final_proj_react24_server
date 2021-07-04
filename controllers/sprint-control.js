@@ -50,10 +50,8 @@ const removeSprint = async (req, res, next) => {
     const sprint = await Sprint.getSprintById(sprintId)
 
     if (sprint._id) {
-      const isOwner = await Sprint.checkIsOwner(
-        currentUser,
-        sprint.projectOwnerId,
-      )
+      const isOwner = await Project.isOwner(projectId, currentUser)
+
       if (isOwner) {
         const removedSprint = await Sprint.removeSprintAndTasks(sprintId)
 
@@ -98,10 +96,7 @@ const changeSprintName = async (req, res, next) => {
     const sprint = await Sprint.getSprintById(sprintId)
 
     if (sprint._id) {
-      const isOwner = await Sprint.checkIsOwner(
-        currentUserId,
-        sprint.projectOwnerId,
-      )
+      const isOwner = await Project.isOwner(projectId, currentUserId)
 
       if (isOwner) {
         const result = await Sprint.changeName(newTitle, sprintId)

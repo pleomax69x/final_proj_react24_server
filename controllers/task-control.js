@@ -60,10 +60,7 @@ const deleteTask = async (req, res, next) => {
     const task = await Task.findById(taskId)
 
     if (task._id) {
-      const isOwner = await Sprint.checkIsOwner(
-        currentUserId,
-        task.projectOwnerId,
-      )
+      const isOwner = await Project.isOwner(projectId, currentUserId)
 
       if (isOwner) {
         const deletedTask = await Task.removeTask(taskId)
