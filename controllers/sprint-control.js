@@ -147,9 +147,9 @@ const getAllSprints = async (req, res, next) => {
   const projectId = req.params.projectId
 
   try {
-    const checkedProject = await Project.getProjectById(projectId)
+    const project = await Project.getProjectById(projectId)
 
-    if (checkedProject._id) {
+    if (project._id) {
       const sprints = await Sprint.getAllSprints(projectId)
 
       if (sprints) {

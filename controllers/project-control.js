@@ -79,7 +79,7 @@ const remove = async (req, res, next) => {
         }
         console.log('there were no sprints in the project')
 
-        const removeUsers = await Users.removeUserFromProject(userId, projectId)
+        const removeUsers = await Users.removeProjectFromUser(userId, projectId)
         removeUsers
           ? console.log('User removed from project')
           : console.log('User are not removed')
