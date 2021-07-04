@@ -10,9 +10,9 @@ const addTeammate = async (req, res, next) => {
 
     if (checkUser) {
       const { projectsId, _id } = checkUser
-      const { teammatesId } = currentProject
+      const { teammates } = currentProject
 
-      const checkProjectTeammateList = teammatesId.find(el => {
+      const checkProjectTeammateList = teammates.find(el => {
         return el.toString() === _id.toString()
       })
 
@@ -25,7 +25,7 @@ const addTeammate = async (req, res, next) => {
           await User.addProjectToUser(checkUser._id, projectId)
         }
 
-        await Project.addTeammateToProject(checkUser._id, projectId)
+        await Project.addTeammateToProject(checkUser, projectId)
 
         const project = await Project.getProjectById(projectId)
         return res.status(HttpCode.CREATED).json({
