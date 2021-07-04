@@ -1,10 +1,6 @@
 const Sprint = require('./schemas/sprint-schema')
 const Tasks = require('./task-model')
 
-const checkIsOwner = async (userId, sprintId) => {
-  return sprintId.toString() === userId
-}
-
 const createSprint = async data => {
   try {
     const sprintData = await new Sprint(data)
@@ -76,5 +72,4 @@ module.exports = {
   getAllSprints,
   getSprintById,
   removeSprintAndTasks,
-  checkIsOwner,
 }
