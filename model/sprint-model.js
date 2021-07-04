@@ -72,5 +72,4 @@ module.exports = {
   getAllSprints,
   getSprintById,
   removeSprintAndTasks,
-  checkIsOwner,
 }
