@@ -10,25 +10,28 @@
     }
   },
   "servers": [
-    { "url": "https://planning-app1.herokuapp.com/" },
-    { "url": "http://localhost:5000/" }
+    {
+      "url": "https://planning-app1.herokuapp.com/"
+    },
+    {
+      "url": "http://localhost:5000/"
+    }
   ],
   "tags": [
     {
-      "name": "Auth",
-      "description": "Authorization endpoints"
+      "name": "Auth"
     },
     {
-      "name": "Projects",
-      "description": "Projects endpoints"
+      "name": "Projects"
     },
     {
-      "name": "Sprints",
-      "description": "Sprints endpoints"
+      "name": "Sprints"
     },
     {
-      "name": "Tasks",
-      "description": "Tasks endpoints"
+      "name": "Tasks"
+    },
+    {
+      "name": "Teammates"
     }
   ],
   "paths": {
@@ -76,7 +79,11 @@
         "tags": ["Auth"],
         "summary": "User login",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Login's object",
           "required": true,
@@ -106,10 +113,6 @@
           "401": {
             "description": "Unauthorized (Email or password is wrong)",
             "content": {}
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {}
           }
         }
       }
@@ -117,9 +120,13 @@
     "/logout": {
       "post": {
         "tags": ["Auth"],
-        "summary": "User logout , send none content!",
+        "summary": "User logout, send none content!",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successful logout (No content)"
@@ -127,9 +134,33 @@
           "401": {
             "description": "Unauthorized (Not authorized)",
             "content": {}
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user",
+        "parameters": [],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentResponse"
+                }
+              }
+            }
           },
-          "500": {
-            "description": "Internal server error",
+          "401": {
+            "description": "Unauthorized (Not authorized)",
             "content": {}
           }
         }
@@ -140,14 +171,18 @@
         "tags": ["Projects"],
         "summary": "Create a project",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Project object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Projects"
+                "$ref": "#/components/schemas/ProjectsRequest"
               }
             }
           }
@@ -155,7 +190,13 @@
         "responses": {
           "201": {
             "description": "Created",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectsResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request (Validation Error)",
@@ -165,8 +206,8 @@
             "description": "Not authorized",
             "content": {}
           },
-          "404": {
-            "description": "Not found",
+          "500": {
+            "description": "Internal server error (project was not created)",
             "content": {}
           }
         }
@@ -176,39 +217,48 @@
         "summary": "Get all projects",
         "parameters": [
           {
-          "name": "sortBy",
-          "in": "query",
-          "description": "Sorting. First created project will shown first",
-          "example": "name",
-          "schema": {
-            "type": "string"
-          }
-          
+            "name": "sortBy",
+            "in": "query",
+            "description": "Sorting. First created project will shown first",
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
           },
           {
-          "name": "sortByDesc",
-          "in": "query",
-          "description": "Sorting. Last created project will shown first",
-          "example": "createdAt",
-          "schema": {
-            "type": "string"
+            "name": "sortByDesc",
+            "in": "query",
+            "description": "Sorting. Last created project will shown first",
+            "example": "createdAt",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter. Choose only fields you need",
+            "example": "name|description",
+            "schema": {
+              "type": "string"
+            }
           }
-        },
-         {
-          "name": "filter",
-          "in": "query",
-          "description": "Filter. Choose only fields you need",
-          "example": "name|description",
-          "schema": {
-            "type": "string"
+        ],
+        "security": [
+          {
+            "Bearer": []
           }
-          
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectsResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Not authorized",
@@ -226,35 +276,35 @@
         "tags": ["Projects"],
         "summary": "Delete a project (sprints and tasks associated with it)",
         "parameters": [
-        {
-          "name": "projectId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {}
+            "description": "Success"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Forbidden (only owner can delete the project)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {}
+            "description": "Internal server error (project was not deleted)"
           }
         }
       },
@@ -262,23 +312,27 @@
         "tags": ["Projects"],
         "summary": "Rename project",
         "parameters": [
-        {
-          "name": "projectId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Project object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectName"
+                "$ref": "#/components/schemas/ProjectsRequest"
               }
             }
           }
@@ -286,23 +340,28 @@
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectsResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request",
-            "content": {}
+            "description": "Bad request"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Forbidden (only owner can change the project name)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (project name was not changed)"
           }
         }
       }
@@ -313,21 +372,26 @@
         "summary": "Create a sprint",
         "parameters": [
           {
-          "name": "projectId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Sprint object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Sprints"
+                "$ref": "#/components/schemas/SprintsRequest"
               }
             }
           }
@@ -335,23 +399,25 @@
         "responses": {
           "201": {
             "description": "Created",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintsResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request (Validation Error)",
-            "content": {}
+            "description": "Bad request (Validation Error)"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
-          "404": {
-            "description": "Not found",
-            "content": {}
+          "403": {
+            "description": "Forbidden (only project owner can add sprint)"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {}
+            "description": "Internal server error"
           }
         }
       },
@@ -366,20 +432,32 @@
             "schema": {
               "type": "string"
             }
-          }],
-        "security": [{ "Bearer": [] }],
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintsResponse"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Forbidden (only teammate have access)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found (project was not found)"
           }
         }
       }
@@ -389,31 +467,35 @@
         "tags": ["Sprints"],
         "summary": "Delete a sprint (and tasks associated with it)",
         "parameters": [
-        {
-          "name": "sprintId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "sprintId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Success (Sprint was deleted)",
-            "content": {}
+            "description": "Success (sprint was deleted)"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Forbidden (only project owner can delete sprint)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (sprint was not deleted)"
           }
         }
       },
@@ -421,23 +503,27 @@
         "tags": ["Sprints"],
         "summary": "Rename sprint",
         "parameters": [
-        {
-          "name": "sprintId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "sprintId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Sprint object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SprintTitle"
+                "$ref": "#/components/schemas/SprintsRequest"
               }
             }
           }
@@ -445,23 +531,28 @@
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintsResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request",
-            "content": {}
+            "description": "Bad request"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Forbidden (only project owner can change title)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (title was not changed)"
           }
         }
       }
@@ -471,22 +562,27 @@
         "tags": ["Tasks"],
         "summary": "Create a task",
         "parameters": [
-         {
-          "name": "sprintId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "sprintId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Task object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tasks"
+                "$ref": "#/components/schemas/TasksRequest"
               }
             }
           }
@@ -494,23 +590,25 @@
         "responses": {
           "201": {
             "description": "Created",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request (Validation Error)",
-            "content": {}
+            "description": "Bad request (Validation Error)"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found (sprint was not found)"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {}
+            "description": "Internal server error (task was not created)"
           }
         }
       },
@@ -525,20 +623,29 @@
             "schema": {
               "type": "string"
             }
-          }],
-        "security": [{ "Bearer": [] }],
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found (sprint was not found)"
           }
         }
       }
@@ -548,31 +655,35 @@
         "tags": ["Tasks"],
         "summary": "Delete a task",
         "parameters": [
-        {
-          "name": "taskId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
-        "security": [{ "Bearer": [] }],
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Success (Task was deleted)",
-            "content": {}
+            "description": "Success (task was deleted)"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Forbidden (only project owner can delete task)"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (task was not deleted)"
           }
         }
       },
@@ -580,23 +691,27 @@
         "tags": ["Tasks"],
         "summary": "Change hours per day in task",
         "parameters": [
-        {
-          "name": "taskId",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Task object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TaskHoursPerDay"
+                "$ref": "#/components/schemas/TasksRequest"
               }
             }
           }
@@ -604,23 +719,108 @@
         "responses": {
           "200": {
             "description": "Success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request",
-            "content": {}
+            "description": "Bad request"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
-          },
-          "403": {
-            "description": "Forbidden (Permission error)",
-            "content": {}
+            "description": "Not authorized"
           },
           "404": {
-            "description": "Not found",
-            "content": {}
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/teammates/{projectId}": {
+      "post": {
+        "tags": ["Teammates"],
+        "summary": "Add teammate to project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Teammate object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeammatesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeammatesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (Validation Error)"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict (user already in project)"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Teammates"],
+        "summary": "Delete teammate from project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (Teammate was deleted)"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -647,7 +847,10 @@
             "description": "User password. Special characters are not allowed!"
           }
         },
-        "example": { "email": "yourmail@gmail.com", "password": "qweWerty" }
+        "example": {
+          "email": "yourmail@gmail.com",
+          "password": "qweWerty"
+        }
       },
       "RegistrationResponse": {
         "type": "object",
@@ -682,7 +885,10 @@
             "description": "User password. Special characters are not allowed!"
           }
         },
-        "example": {"email": "yourmail@gmail.com", "password": "qweWerty"}
+        "example": {
+          "email": "yourmail@gmail.com",
+          "password": "qweWerty"
+        }
       },
       "LoginResponse": {
         "type": "object",
@@ -698,10 +904,47 @@
           }
         }
       },
-      "Projects": {
+      "CurrentResponse": {
+        "type": "object",
+        "example": {
+          "status": "success",
+          "code": 200,
+          "data": {
+            "email": "yourmail@gmail.com"
+          }
+        }
+      },
+      "ProjectsRequest": {
         "type": "object",
         "required": ["name", "description"],
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name",
+            "minLength": 3,
+            "maxLength": 30
+          },
+          "description": {
+            "type": "string",
+            "description": "Project description",
+            "minLength": 5,
+            "maxLength": 100
+          }
+        },
+        "example": {
+          "name": "Project1",
+          "description": "description"
+        }
+      },
+      "ProjectsResponse": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "auto generated id of the project"
+          },
           "name": {
             "type": "string",
             "description": "Project name",
@@ -719,6 +962,12 @@
             "format": "ObjectId",
             "description": "Ref to user (Owner of the project)"
           },
+          "teammates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeammatesResponse"
+            }
+          },
           "createdAt": {
             "type": "string",
             "format": "ISODate",
@@ -730,25 +979,55 @@
             "description": "When project was updated"
           }
         },
-        "example": { "name": "Project1", "description": "description" }
-      },
-      "ProjectName": {
-        "type": "object",
-        "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Project name",
-            "minLength": 3,
-            "maxLength": 30
+        "example": {
+          "project": {
+            "teammates": [
+              {
+                "id": "60dc352e3a8e74001c7d05f3",
+                "email": "yourmail@gmail.com"
+              }
+            ],
+            "_id": "60dc352e3a8e74001c7d05cr",
+            "name": "Project1",
+            "description": "description",
+            "owner": "60dc352e3a8e74001c7d05f3",
+            "createdAt": "2021-07-04T17:37:30.810Z",
+            "updatedAt": "2021-07-04T17:37:30.810Z"
           }
-        },
-        "example": { "name": "Renamed project" }
+        }
       },
-      "Sprints": {
+      "SprintsRequest": {
         "type": "object",
         "required": ["title", "date", "duration"],
         "properties": {
+          "title": {
+            "type": "string",
+            "description": "Sprint title"
+          },
+          "date": {
+            "type": "string",
+            "description": "Sprint start date"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration of the sprint"
+          }
+        },
+        "example": {
+          "title": "Sprint1",
+          "date": "2021-07-01",
+          "duration": 3
+        }
+      },
+      "SprintsResponse": {
+        "type": "object",
+        "required": ["title", "date", "duration"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "auto-generated id"
+          },
           "title": {
             "type": "string",
             "description": "Sprint title"
@@ -766,6 +1045,18 @@
             "format": "ObjectId",
             "description": "Ref to project"
           },
+          "listOfDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of sprint dates"
+          },
+          "projectOwnerId": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "Ref to user"
+          },
           "createdAt": {
             "type": "string",
             "format": "ISODate",
@@ -777,20 +1068,18 @@
             "description": "When sprint was updated"
           }
         },
-        "example": { "title": "Sprint1", "date": "2021-06-30", "duration": "10" }
+        "example": {
+          "_id": "60dc352e3a8e74001c7d06er",
+          "title": "Sprint1",
+          "date": "2021-07-01",
+          "duration": "3",
+          "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"],
+          "projectOwnerId": "60dc352e3a8e74001c7d05f3",
+          "createdAt": "2021-07-05T14:59:56.691Z",
+          "updatedAt": "2021-07-05T14:59:56.691Z"
+        }
       },
-      "SprintTitle": {
-        "type": "object",
-        "required": ["title"],
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Sprint title"
-          }
-        },
-        "example": { "title": "Renamed sprint" }
-      },
-      "Tasks": {
+      "TasksRequest": {
         "type": "object",
         "required": ["title", "scheduledHours"],
         "properties": {
@@ -804,19 +1093,59 @@
             "description": "Scheduled hours to complete task"
           },
           "hoursPerDay": {
-            "type": "number",
-            "default": 0,
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
             "description": "Hours per day spent on task"
           },
-          "totalHours": {
+          "scheduledHoursCoeff": {
             "type": "number",
-            "default": 0,
-            "description": "The total number of hours spent on task"
+            "default": 1,
+            "description": "Scheduled hours coefficient"
+          }
+        },
+        "example": {
+          "title": "Task1",
+          "scheduledHours": 5,
+          "hoursPerDay": 3,
+          "scheduledHoursCoeff": 1
+        }
+      },
+      "TasksResponse": {
+        "type": "object",
+        "required": ["title", "scheduledHours"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Sprint title"
+          },
+          "scheduledHours": {
+            "type": "number",
+            "default": 2,
+            "description": "Scheduled hours to complete task"
+          },
+          "hoursPerDay": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "Hours per day spent on task"
+          },
+          "scheduledHoursCoeff": {
+            "type": "number",
+            "default": 1,
+            "description": "Scheduled hours coefficient"
           },
           "sprintId": {
             "type": "string",
             "format": "ObjectId",
             "description": "Ref to sprint"
+          },
+          "projectOwnerId": {
+            "type": "string",
+            "format": "ObjectId",
+            "description": "Ref to user"
           },
           "createdAt": {
             "type": "string",
@@ -829,18 +1158,50 @@
             "description": "When task was updated"
           }
         },
-        "example": { "title": "Task1", "scheduledHours": 5 }
+        "example": {
+          "_id": "60e323f8ca948f25ccdf9ab3",
+          "scheduledHours": 5,
+          "hoursPerDay": [],
+          "scheduledHoursCoeff": 1,
+          "title": "Task1",
+          "sprintId": "60e31e6cca948f25ccdf9aab",
+          "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
+          "createdAt": "2021-07-05T15:23:36.653Z",
+          "updatedAt": "2021-07-05T15:23:36.653Z"
+        }
       },
-      "TaskHoursPerDay": {
+      "TeammatesRequest": {
         "type": "object",
-        "required": ["hoursPerDay"],
+        "required": ["email"],
         "properties": {
-          "hoursPerDay": {
-            "type": "number",
-            "description": "Hours per day spent on task"
+          "email": {
+            "type": "string",
+            "description": "teammate email"
           }
         },
-        "example": { "hoursPerDay": 3 }
+        "example": {
+          "email": "yourmail@gmail.com"
+        }
+      },
+      "TeammatesResponse": {
+        "type": "object",
+        "required": ["id", "email"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "teammate id"
+          },
+          "email": {
+            "type": "string",
+            "description": "teammate email"
+          }
+        },
+        "example": {
+          "user": {
+            "id": "60dc352e3a8e74001c7d05f3",
+            "email": "yourmail@gmail.com"
+          }
+        }
       }
     },
     "securitySchemes": {

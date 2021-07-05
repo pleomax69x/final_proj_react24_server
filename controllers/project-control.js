@@ -142,9 +142,11 @@ const patch = async (req, res, next) => {
           body,
         )
         if (changedProjectName) {
-          return res
-            .status(HttpCode.OK)
-            .json({ status: 'success', code: HttpCode.OK, data: { project } })
+          return res.status(HttpCode.OK).json({
+            status: 'success',
+            code: HttpCode.OK,
+            data: { project: changedProjectName },
+          })
         }
         return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
           status: 'fail',
