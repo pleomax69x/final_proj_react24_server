@@ -18,7 +18,7 @@ const taskSchema = new Schema(
     scheduledHoursCoeff: {
       type: Number,
       required: false,
-      default: 0,
+      default: 1,
     },
     sprintId: {
       type: SchemaTypes.ObjectId,
@@ -31,6 +31,7 @@ const taskSchema = new Schema(
       required: [true, 'project owner id is required'],
       ref: 'user',
     },
+  },
   {
     versionKey: false,
     timestamps: true,
