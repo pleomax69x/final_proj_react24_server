@@ -31,6 +31,7 @@ const taskSchema = new Schema(
       required: [true, 'project owner id is required'],
       ref: 'user',
     },
+  },
   {
     versionKey: false,
     timestamps: true,
