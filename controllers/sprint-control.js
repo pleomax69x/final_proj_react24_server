@@ -144,14 +144,14 @@ const changeSprintName = async (req, res, next) => {
 }
 
 const getAllSprints = async (req, res, next) => {
-  const currentUserId = req.user.id
+  const user = req.user
   const projectId = req.params.projectId
 
   try {
     const project = await Project.getProjectById(projectId)
 
     if (project._id) {
-      const isTeammate = await Project.isTeammate(currentUserId, projectId)
+      const isTeammate = await Project.isTeammate(user, projectId)
 
       if (isTeammate) {
         const sprints = await Sprint.getAllSprints(projectId)
@@ -161,7 +161,7 @@ const getAllSprints = async (req, res, next) => {
           code: HttpCode.OK,
           data: {
             project,
-            sprints,
+            sprints: sprints,
           },
         })
       }

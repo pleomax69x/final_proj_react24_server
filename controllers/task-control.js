@@ -10,30 +10,28 @@ const addTask = async (req, res, next) => {
     const sprint = await Sprint.getSprintById(sprintId)
 
     if (sprint._id) {
+      let hoursPerDay = []
+
+      sprint.listOfDates.map(date => {
+        let data = { date, hours: 0 }
+        hoursPerDay.push(data)
+      })
+      console.log(hoursPerDay)
       const data = {
         ...req.body,
-        createdBy: currentUser,
+        hoursPerDay,
         projectOwnerId: sprint.projectOwnerId,
         sprintId,
       }
 
       const newTask = await Task.createTask(data)
 
-      const { _id, title, scheduledHours, createdBy, projectOwnerId } = newTask
-
-      if (_id) {
+      if (newTask._id) {
         return res.status(HttpCode.CREATED).json({
           status: 'Created',
           code: HttpCode.CREATED,
           data: {
-            task: {
-              id: _id,
-              title,
-              scheduledHours,
-              sprintId,
-              createdBy,
-              projectOwnerId,
-            },
+            newTask,
           },
         })
       } else
@@ -107,10 +105,11 @@ const getAllTasks = async (req, res, next) => {
   const sprintId = req.params.sprintId
 
   try {
-    const tasks = await Task.getAllTaskBySprintId(sprintId)
     const sprint = await Sprint.getSprintById(sprintId)
 
-    if (sprint) {
+    if (sprint._id) {
+      const tasks = await Task.getAllTaskBySprintId(sprintId)
+
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,

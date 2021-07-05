@@ -45,8 +45,8 @@ const validateDel = async (schema, { sprintId }, next) => {
     next()
   } catch (err) {
     next({
-      status: 'fail',
-      code: HttpCode.INTERNAL_SERVER_ERROR,
+      status: 'error',
+      code: HttpCode.BAD_REQUEST,
       message: err.message,
     })
   }
