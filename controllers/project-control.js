@@ -85,10 +85,14 @@ const remove = async (req, res, next) => {
         }
         console.log('there were no sprints in the project')
 
-        const removeUsers = await Users.removeProjectFromUser(userId, projectId)
+        const teammatesId = project.teammates.map(el => el.id)
+        const removeUsers = await Users.removeProjectFromAllUsers(
+          teammatesId,
+          projectId,
+        )
         removeUsers
-          ? console.log('User removed from project')
-          : console.log('User are not removed')
+          ? console.log('Project removed from users')
+          : console.log('Project not removed from users')
 
         const removeProject = await Projects.removeProject(userId, projectId)
 
