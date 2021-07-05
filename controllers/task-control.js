@@ -16,7 +16,7 @@ const addTask = async (req, res, next) => {
         let data = { date, hours: 0 }
         hoursPerDay.push(data)
       })
-      console.log(hoursPerDay)
+
       const data = {
         ...req.body,
         hoursPerDay,
@@ -130,15 +130,26 @@ const getAllTasks = async (req, res, next) => {
 }
 
 const changeTask = async (req, res, next) => {
-  const taskId = req.params.taskId
+  const { taskId } = req.params
+  const { hoursPerDay } = req.body
+
   try {
-    const changedTask = await Task.changeTaskById(req.body, taskId)
-    if (changedTask) {
+    const changeHours = await Task.changeHours(taskId, hoursPerDay)
+
+    if (changeHours.nModified > 0) {
+      const { hoursPerDay } = await Task.findById(taskId)
+
+      const totalHours = hoursPerDay.reduce((total, current) => {
+        return total + current.hours
+      }, 0)
+
+      const chahgeTotalHours = await Task.changeTotal(taskId, totalHours)
+
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         message: 'task was changed',
-        data: changedTask,
+        data: chahgeTotalHours,
       })
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({

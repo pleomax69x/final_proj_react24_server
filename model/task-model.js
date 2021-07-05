@@ -65,6 +65,29 @@ const changeTaskById = async (body, taskId) => {
   }
 }
 
+const changeHours = async (taskId, hoursPerDay) => {
+  if ((taskId, hoursPerDay)) {
+    const { date, hours } = hoursPerDay
+
+    const result = await Tasks.updateOne(
+      { _id: taskId, 'hoursPerDay.date': date },
+      {
+        $set: { 'hoursPerDay.$.hours': hours },
+      },
+    )
+    return result
+  }
+}
+
+const changeTotal = async (taskId, totalHours) => {
+  const result = await Tasks.findOneAndUpdate(
+    { _id: taskId },
+    { totalHours },
+    { new: true },
+  )
+  return result
+}
+
 module.exports = {
   findById,
   createTask,
@@ -72,4 +95,6 @@ module.exports = {
   removeAllTasksBySprintId,
   getAllTaskBySprintId,
   changeTaskById,
+  changeHours,
+  changeTotal,
 }

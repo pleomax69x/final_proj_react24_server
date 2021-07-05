@@ -16,8 +16,9 @@ const schemaGetAllTasks = Joi.object({
 })
 
 const schemaChangeTask = Joi.object({
+  scheduledHours: Joi.number(),
   taskId: Joi.string().required(),
-  hoursPerDay: Joi.number(),
+  hoursPerDay: Joi.object(),
   totalHours: Joi.number(),
 })
 
