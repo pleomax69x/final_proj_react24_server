@@ -7,7 +7,7 @@ const schemaAddTeammate = Joi.object({
 })
 
 const schemaDelTeammate = Joi.object({
-  teammateId: Joi.string().required(),
+  email: Joi.string().required(),
 })
 
 const addValidate = async (
@@ -30,14 +30,14 @@ const addValidate = async (
     })
   }
 }
-const delValidate = async (schema, { teammateId }, next) => {
+const delValidate = async (schema, email, next) => {
   try {
-    await schema.validateAsync(teammateId)
+    await schema.validateAsync(email)
     next()
   } catch (err) {
     next({
-      status: 'fail',
-      code: HttpCode.INTERNAL_SERVER_ERROR,
+      status: 'error',
+      code: HttpCode.BAD_REQUEST,
       message: err.message,
     })
   }
@@ -48,5 +48,5 @@ module.exports.validateAddTeammate = (req, _res, next) => {
 }
 
 module.exports.validateDelTeammate = (req, _res, next) => {
-  return delValidate(schemaDelTeammate, req.params.teammateId, next)
+  return delValidate(schemaDelTeammate, req.body, next)
 }

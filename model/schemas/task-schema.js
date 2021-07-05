@@ -12,6 +12,10 @@ const taskSchema = new Schema(
       default: 2,
     },
     hoursPerDay: {
+      type: [],
+      required: false,
+    },
+    scheduledHoursCoeff: {
       type: Number,
       required: false,
       default: 0,
@@ -24,11 +28,6 @@ const taskSchema = new Schema(
     projectOwnerId: {
       type: SchemaTypes.ObjectId,
       required: [true, 'project owner id is required'],
-      ref: 'user',
-    },
-    createdBy: {
-      type: SchemaTypes.ObjectId,
-      required: [true, 'user id is required'],
       ref: 'user',
     },
   },
