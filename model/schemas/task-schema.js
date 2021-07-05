@@ -15,10 +15,10 @@ const taskSchema = new Schema(
       type: [],
       required: false,
     },
-    scheduledHoursCoeff: {
+    totalHours: {
       type: Number,
       required: false,
-      default: 1,
+      default: 0,
     },
     sprintId: {
       type: SchemaTypes.ObjectId,
