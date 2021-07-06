@@ -21,6 +21,10 @@ const schemaChangeTask = Joi.object({
   totalHours: Joi.number(),
 })
 
+const schemaChangeScheduledHours = Joi.object({
+  scheduledHours: Joi.number().required(),
+})
+
 const validateCreate = async (schema, body, { sprintId }, next) => {
   const data = {
     ...body,
@@ -83,6 +87,19 @@ const validateChange = async (schema, body, { taskId }, next) => {
   }
 }
 
+const validateScheduledHours = async (schema, body, next) => {
+  try {
+    await schema.validateAsync(body)
+    next()
+  } catch (err) {
+    next({
+      status: 'error',
+      code: HttpCode.BAD_REQUEST,
+      message: err.message,
+    })
+  }
+}
+
 module.exports.validateCreateTask = (req, _res, next) => {
   return validateCreate(schemaCreateTask, req.body, req.params, next)
 }
@@ -97,4 +114,8 @@ module.exports.validateGetTasks = (req, _res, next) => {
 
 module.exports.validateChangeTask = (req, _res, next) => {
   return validateChange(schemaChangeTask, req.body, req.params, next)
+}
+
+module.exports.validateChangScheduledHours = (req, _res, next) => {
+  return validateScheduledHours(schemaChangeScheduledHours, req.body, next)
 }
