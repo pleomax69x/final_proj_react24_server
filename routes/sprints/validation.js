@@ -6,6 +6,7 @@ const schemaCreateSprint = Joi.object({
   date: Joi.string().required(),
   duration: Joi.number().required(),
   projectId: Joi.string().required(),
+  listOfDates: Joi.array().required(),
 })
 
 const schemaRemoveSprint = Joi.object({
