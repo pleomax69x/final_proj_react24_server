@@ -17,7 +17,7 @@ const sprintSchema = new Schema(
     },
     listOfDates: {
       type: [],
-      required: [true, 'list of date is required'],
+      required: [true, 'list of dates is required'],
     },
     projectId: {
       type: SchemaTypes.ObjectId,

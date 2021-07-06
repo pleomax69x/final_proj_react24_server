@@ -58,7 +58,8 @@ const deleteTask = async (req, res, next) => {
     const task = await Task.findById(taskId)
 
     if (task._id) {
-      const isOwner = await Project.isOwner(projectId, currentUserId)
+      const ownerId = task.projectOwnerId.toString()
+      const isOwner = ownerId === currentUserId
 
       if (isOwner) {
         const deletedTask = await Task.removeTask(taskId)
