@@ -6,8 +6,12 @@ const { HttpCode } = require('../helpers/constants')
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
 const registration = async (req, res, next) => {
+  const userEmail = req.body.email.toLowerCase()
+
   try {
-    const checksUser = await Users.findByEmail(req.body.email)
+    const checksUser = await Users.findByEmail(userEmail)
+
+    console.log(checksUser)
 
     if (checksUser) {
       return res.status(HttpCode.CONFLICT).json({
