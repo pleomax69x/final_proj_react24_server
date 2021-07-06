@@ -44,6 +44,14 @@ const removeProject = async (userId, projectId) => {
   return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
 }
 
+const removeAllProjects = async owner => {
+  if (owner) {
+    const result = await Project.deleteMany({ owner })
+    return result
+  }
+  return console.log('user id is required')
+}
+
 const updateProjectName = async (userId, projectId, body) => {
   return await Project.findOneAndUpdate(
     { _id: projectId, owner: userId },
@@ -81,6 +89,7 @@ module.exports = {
   getProjectById,
   getAllProjects,
   removeProject,
+  removeAllProjects,
   updateProjectName,
   isOwner,
   addTeammateToProject,

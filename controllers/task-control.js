@@ -54,48 +54,50 @@ const addTask = async (req, res, next) => {
 const deleteTask = async (req, res, next) => {
   const currentUserId = req.user.id
   const taskId = req.params.taskId
+
   try {
     const task = await Task.findById(taskId)
 
-    if (task._id) {
-      const ownerId = task.projectOwnerId.toString()
-      const isOwner = ownerId === currentUserId
-
-      if (isOwner) {
-        const deletedTask = await Task.removeTask(taskId)
-
-        if (deletedTask._id) {
-          const { _id, title, sprintId } = deletedTask
-          return res.status(HttpCode.OK).json({
-            status: 'success',
-            code: HttpCode.OK,
-            message: 'task was deleted',
-            data: {
-              task: {
-                id: _id,
-                title,
-                sprintId,
-              },
-            },
-          })
-        } else {
-          return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
-            status: 'fail',
-            code: HttpCode.INTERNAL_SERVER_ERROR,
-            message: 'task was not deleted',
-          })
-        }
-      }
-      return res.status(HttpCode.FORBIDDEN).json({
+    if (task === null) {
+      return res.status(HttpCode.NOT_FOUND).json({
         status: 'error',
-        code: HttpCode.FORBIDDEN,
-        message: 'only project owner can delete task',
+        code: HttpCode.NOT_FOUND,
+        message: 'task was not found',
       })
     }
-    return res.status(HttpCode.NOT_FOUND).json({
+
+    const ownerId = task.projectOwnerId.toString()
+    const isOwner = ownerId === currentUserId
+
+    if (isOwner) {
+      const deletedTask = await Task.removeTask(taskId)
+
+      if (deletedTask._id) {
+        const { _id, title, sprintId } = deletedTask
+        return res.status(HttpCode.OK).json({
+          status: 'success',
+          code: HttpCode.OK,
+          message: 'task was deleted',
+          data: {
+            task: {
+              id: _id,
+              title,
+              sprintId,
+            },
+          },
+        })
+      } else {
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+          status: 'fail',
+          code: HttpCode.INTERNAL_SERVER_ERROR,
+          message: 'task was not deleted',
+        })
+      }
+    }
+    return res.status(HttpCode.FORBIDDEN).json({
       status: 'error',
-      code: HttpCode.NOT_FOUND,
-      message: 'task was not found',
+      code: HttpCode.FORBIDDEN,
+      message: 'only project owner can delete task',
     })
   } catch (err) {
     next(err)
@@ -108,7 +110,7 @@ const getAllTasks = async (req, res, next) => {
   try {
     const sprint = await Sprint.getSprintById(sprintId)
 
-    if (sprint._id) {
+    if (sprint !== null) {
       const tasks = await Task.getAllTaskBySprintId(sprintId)
 
       return res.status(HttpCode.OK).json({
