@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const Users = require('../model/user-model')
+const Tasks = require('../model/task-model')
 const { HttpCode } = require('../helpers/constants')
+const Sprints = require('../model/sprint-model')
+const Projects = require('../model/project-model')
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
@@ -111,9 +114,93 @@ const current = async (req, res, next) => {
   }
 }
 
+const removeAllProjects = async (req, res, next) => {
+  const { id } = req.user
+  const { projectsId } = req.user
+
+  try {
+    const deleteTasks = await Tasks.removeTaskByProjectOwnerId(id)
+
+    if (deleteTasks) {
+      const deleteSprints = await Sprints.removeAllSprints(id)
+
+      if (deleteSprints) {
+        projectsId.map(async id => {
+          await Users.removeProjects(id)
+        })
+
+        const deleteProjects = await Projects.removeAllProjects(id)
+
+        if (deleteProjects) {
+          return res.status(HttpCode.OK).json({
+            status: 'success',
+            code: HttpCode.OK,
+            message: 'projects were deleted',
+          })
+        }
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+          status: 'fail',
+          code: HttpCode.INTERNAL_SERVER_ERROR,
+          message: 'projects were not deletes',
+        })
+      }
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+        status: 'fail',
+        code: HttpCode.INTERNAL_SERVER_ERROR,
+        message: 'projects, sprints were not deleted',
+      })
+    }
+    return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+      status: 'fail',
+      code: HttpCode.INTERNAL_SERVER_ERROR,
+      message: 'projects, sprints and tasks were not deleted',
+    })
+  } catch (err) {
+    next(err.message)
+  }
+}
+
+const removeAllSprints = async (req, res, next) => {
+  const { id } = req.user
+  const { projectId } = req.params
+
+  try {
+    const sprints = await Sprints.getAllSprints(projectId)
+
+    if (Object.keys(sprints).length !== 0) {
+      sprints.map(async sprint => {
+        const isOwner = sprint.projectOwnerId.toString() === id
+
+        if (isOwner) {
+          await Sprints.removeSprintAndTasks(sprint._id)
+        }
+        return res.status(HttpCode.FORBIDDEN).json({
+          status: 'error',
+          code: HttpCode.FORBIDDEN,
+          message: 'only project owner can delete sprints',
+        })
+      })
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        message: 'sprints and tasks were deleted',
+      })
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: 'error',
+      code: HttpCode.NOT_FOUND,
+      message: 'sprint list is empry!',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   registration,
   login,
   logout,
   current,
+  removeAllProjects,
+  removeAllSprints,
 }

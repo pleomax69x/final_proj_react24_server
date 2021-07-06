@@ -26,6 +26,14 @@ const removeTask = async taskId => {
   }
 }
 
+const removeTaskByProjectOwnerId = async owner => {
+  if (owner) {
+    const result = await Tasks.deleteMany({ projectOwnerId: owner }) ///проверить!
+    return result
+  }
+  return console.log('user id is required')
+}
+
 const removeAllTasksBySprintId = async sprintId => {
   if (sprintId) {
     try {
@@ -97,4 +105,5 @@ module.exports = {
   changeScheduledHours,
   changeHours,
   changeTotal,
+  removeTaskByProjectOwnerId,
 }

@@ -49,6 +49,20 @@ const removeProjectFromAllUsers = async (teammatesId, projectId) => {
   })
 }
 
+const removeProjects = async projectId => {
+  const users = await User.updateMany(
+    { projectsId: projectId },
+    {
+      $pull: {
+        projectsId: projectId,
+      },
+    },
+    { new: true },
+  )
+
+  return users
+}
+
 module.exports = {
   findById,
   findByEmail,
@@ -59,4 +73,5 @@ module.exports = {
   removeProjectFromUser,
   updateUserProjects,
   removeProjectFromAllUsers,
+  removeProjects,
 }

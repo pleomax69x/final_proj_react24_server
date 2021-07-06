@@ -8,5 +8,7 @@ router.get('/', guard, ctrl.current)
 router.post('/registration', validateUser, ctrl.registration)
 router.post('/login', validateUser, ctrl.login)
 router.post('/logout', guard, ctrl.logout)
+router.delete('/deleteProjects/', guard, ctrl.removeAllProjects)
+router.delete('/deleteSprints/:projectId', guard, ctrl.removeAllSprints)
 
 module.exports = router

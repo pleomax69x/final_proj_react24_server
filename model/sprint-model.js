@@ -27,6 +27,14 @@ const removeSprint = async sprintId => {
   }
 }
 
+const removeAllSprints = async projectOwnerId => {
+  if (projectOwnerId) {
+    const result = await Sprint.deleteMany({ projectOwnerId })
+    return result
+  }
+  return console.log('user id is required')
+}
+
 const changeName = async (title, sprintId) => {
   try {
     const newTitle = await Sprint.findOneAndUpdate(
@@ -43,7 +51,10 @@ const changeName = async (title, sprintId) => {
 
 const getAllSprints = async projectId => {
   try {
-    const result = await Sprint.find({ projectId: projectId })
+    const result = await Sprint.find(
+      { projectId: projectId },
+      { projectOwnerId: 1, _id: 1 },
+    )
     return result
   } catch (err) {
     return err.message
@@ -72,6 +83,7 @@ const removeSprintAndTasks = async sprintId => {
 module.exports = {
   createSprint,
   removeSprint,
+  removeAllSprints,
   changeName,
   getAllSprints,
   getSprintById,
