@@ -163,9 +163,51 @@ const changeTask = async (req, res, next) => {
   }
 }
 
+const changescheduledHours = async (req, res, next) => {
+  const { taskId } = req.params
+  const { scheduledHours } = req.body
+
+  try {
+    const task = await Task.findById(taskId)
+
+    if (task) {
+      const changeHours = await Task.changeScheduledHours(
+        taskId,
+        scheduledHours,
+      )
+
+      if (changeHours._id) {
+        return res.status(HttpCode.OK).json({
+          status: 'success',
+          code: HttpCode.OK,
+          message: 'scheduledHours was changed',
+          data: {
+            taskId,
+
+            scheduledHours: changeHours.scheduledHours,
+          },
+        })
+      }
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+        status: 'fail',
+        code: HttpCode.INTERNAL_SERVER_ERROR,
+        message: 'scheduledHours was not change',
+      })
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: 'error',
+      code: HttpCode.NOT_FOUND,
+      message: 'task was not found',
+    })
+  } catch (err) {
+    next(err.message)
+  }
+}
+
 module.exports = {
   addTask,
   deleteTask,
   getAllTasks,
   changeTask,
+  changescheduledHours,
 }

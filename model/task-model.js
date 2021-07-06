@@ -50,15 +50,15 @@ const getAllTaskBySprintId = async sprintId => {
   }
 }
 
-const changeTaskById = async (body, taskId) => {
+const changeScheduledHours = async (taskId, scheduledHours) => {
   if (taskId) {
     try {
-      const changedTask = await Tasks.findOneAndUpdate(
+      const result = await Tasks.findOneAndUpdate(
         { _id: taskId },
-        { ...body },
+        { scheduledHours },
         { new: true },
       )
-      return changedTask
+      return result
     } catch (err) {
       return err.message
     }
@@ -94,7 +94,7 @@ module.exports = {
   removeTask,
   removeAllTasksBySprintId,
   getAllTaskBySprintId,
-  changeTaskById,
+  changeScheduledHours,
   changeHours,
   changeTotal,
 }
