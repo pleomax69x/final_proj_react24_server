@@ -63,14 +63,13 @@ const addTeammateToProject = async (user, projectId) => {
     id: user._id,
   }
 
-  return await Project.updateOne(
-    { _id: projectId },
-    { $push: { teammates: data } },
-  )
+  await Project.updateOne({ _id: projectId }, { $push: { teammates: data } })
+
+  return await getProjectById(projectId)
 }
 
 const removeTeammate = async (projectId, teammate) => {
-  return await Project.updateOne(
+  await Project.updateOne(
     { _id: projectId },
     {
       $pull: {
@@ -78,6 +77,8 @@ const removeTeammate = async (projectId, teammate) => {
       },
     },
   )
+  const result = await getProjectById(projectId)
+  return result
 }
 
 module.exports = {
