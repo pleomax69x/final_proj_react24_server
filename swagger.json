@@ -2,8 +2,8 @@
   "openapi": "3.0.1",
   "info": {
     "version": "1.0.0",
-    "title": "Swagger test",
-    "description": "Showing off swagger-ui-express",
+    "title": "Planning app",
+    "description": "Planning app was made by GoIT \\#24 students",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
@@ -20,6 +20,9 @@
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "Additional options"
     },
     {
       "name": "Projects"
@@ -160,8 +163,74 @@
             }
           },
           "401": {
-            "description": "Unauthorized (Not authorized)",
-            "content": {}
+            "description": "Unauthorized (Not authorized)"
+          }
+        }
+      }
+    },
+    "/deleteProjects": {
+      "delete": {
+        "tags": ["Additional options"],
+        "summary": "Delete all projects",
+        "parameters": [],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Forbidden (only owner can delete the projects)"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (projects was not deleted)"
+          }
+        }
+      }
+    },
+    "/deleteSprints/{projectId}": {
+      "delete": {
+        "tags": ["Additional options"],
+        "summary": "Delete all sprints and tasks in project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Forbidden (only project owner can delete sprints)"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error (sprints was not deleted)"
           }
         }
       }
@@ -237,7 +306,7 @@
           {
             "name": "filter",
             "in": "query",
-            "description": "Filter. Choose only fields you need",
+            "description": "Filter. Select only the required fields",
             "example": "name|description",
             "schema": {
               "type": "string"
@@ -274,7 +343,7 @@
     "/projects/{projectId}": {
       "delete": {
         "tags": ["Projects"],
-        "summary": "Delete a project (sprints and tasks associated with it)",
+        "summary": "Delete a project (also sprints and tasks associated with it)",
         "parameters": [
           {
             "name": "projectId",
@@ -689,7 +758,60 @@
       },
       "patch": {
         "tags": ["Tasks"],
-        "summary": "Change hours per day in task",
+        "summary": "Update hours per day in task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Task object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoursPerDay"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/tasks/scheduledHours/{taskId}": {
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Update scheduled hours in task",
         "parameters": [
           {
             "name": "taskId",
@@ -841,10 +963,9 @@
           },
           "password": {
             "type": "string",
-            "minLength": 3,
+            "minLength": 8,
             "maxLength": 30,
-            "format": "A-Za-z0-9",
-            "description": "User password. Special characters are not allowed!"
+            "description": "User password"
           }
         },
         "example": {
@@ -872,17 +993,12 @@
         "properties": {
           "email": {
             "type": "string",
-            "minLength": 5,
-            "maxLength": 30,
             "description": "User email",
             "format": "email"
           },
           "password": {
             "type": "string",
-            "minLength": 3,
-            "maxLength": 30,
-            "format": "A-Za-z0-9",
-            "description": "User password. Special characters are not allowed!"
+            "description": "User password"
           }
         },
         "example": {
@@ -998,7 +1114,7 @@
       },
       "SprintsRequest": {
         "type": "object",
-        "required": ["title", "date", "duration"],
+        "required": ["title", "date", "duration", "listOfDates"],
         "properties": {
           "title": {
             "type": "string",
@@ -1011,17 +1127,32 @@
           "duration": {
             "type": "number",
             "description": "Duration of the sprint"
+          },
+          "listOfDates": {
+            "type": "array",
+            "description": "List of dates come from front-end",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "example": {
           "title": "Sprint1",
           "date": "2021-07-01",
-          "duration": 3
+          "duration": 3,
+          "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"]
         }
       },
       "SprintsResponse": {
         "type": "object",
-        "required": ["title", "date", "duration"],
+        "required": [
+          "title",
+          "date",
+          "duration",
+          "listOfDates",
+          "projectId",
+          "projectOwnerId"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -1047,10 +1178,10 @@
           },
           "listOfDates": {
             "type": "array",
+            "description": "List of dates come from front-end",
             "items": {
               "type": "string"
-            },
-            "description": "List of sprint dates"
+            }
           },
           "projectOwnerId": {
             "type": "string",
@@ -1074,6 +1205,7 @@
           "date": "2021-07-01",
           "duration": "3",
           "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"],
+          "projectId": "60e576129cd95b3c7833cd2w",
           "projectOwnerId": "60dc352e3a8e74001c7d05f3",
           "createdAt": "2021-07-05T14:59:56.691Z",
           "updatedAt": "2021-07-05T14:59:56.691Z"
@@ -1095,26 +1227,23 @@
           "hoursPerDay": {
             "type": "array",
             "items": {
-              "type": "number"
+              "$ref": "#/components/schemas/HoursPerDay"
             },
             "description": "Hours per day spent on task"
           },
-          "scheduledHoursCoeff": {
+          "totalHours": {
             "type": "number",
-            "default": 1,
-            "description": "Scheduled hours coefficient"
+            "default": 0,
+            "description": "Total hours spent on tasks"
           }
         },
         "example": {
-          "title": "Task1",
-          "scheduledHours": 5,
-          "hoursPerDay": 3,
-          "scheduledHoursCoeff": 1
+          "scheduledHours": 5.5
         }
       },
       "TasksResponse": {
         "type": "object",
-        "required": ["title", "scheduledHours"],
+        "required": ["title", "scheduledHours", "sprintId", "projectOwnerId"],
         "properties": {
           "title": {
             "type": "string",
@@ -1128,14 +1257,14 @@
           "hoursPerDay": {
             "type": "array",
             "items": {
-              "type": "number"
+              "$ref": "#/components/schemas/HoursPerDay"
             },
             "description": "Hours per day spent on task"
           },
-          "scheduledHoursCoeff": {
+          "totalHours": {
             "type": "number",
-            "default": 1,
-            "description": "Scheduled hours coefficient"
+            "default": 0,
+            "description": "Total hours spent on tasks"
           },
           "sprintId": {
             "type": "string",
@@ -1161,13 +1290,45 @@
         "example": {
           "_id": "60e323f8ca948f25ccdf9ab3",
           "scheduledHours": 5,
-          "hoursPerDay": [],
-          "scheduledHoursCoeff": 1,
+          "hoursPerDay": [
+            {
+              "date": "2021-07-01",
+              "hours": 0
+            },
+            {
+              "date": "2021-07-02",
+              "hours": 0
+            },
+            {
+              "date": "2021-07-03",
+              "hours": 0
+            }
+          ],
+          "totalHours": 0,
           "title": "Task1",
           "sprintId": "60e31e6cca948f25ccdf9aab",
           "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
           "createdAt": "2021-07-05T15:23:36.653Z",
           "updatedAt": "2021-07-05T15:23:36.653Z"
+        }
+      },
+      "HoursPerDay": {
+        "type": "object",
+        "description": "auto-generated object, filled with data from sprints (listOfDates)",
+        "required": ["date", "hours"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date of sprint day"
+          },
+          "hours": {
+            "type": "number",
+            "description": "Hours spent on task"
+          }
+        },
+        "example": {
+          "date": "2021-07-07",
+          "hours": 0
         }
       },
       "TeammatesRequest": {

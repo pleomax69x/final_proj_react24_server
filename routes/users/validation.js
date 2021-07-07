@@ -10,12 +10,7 @@ const schemaUser = Joi.object({
       tlds: { allow: false },
     })
     .required(),
-  password: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .regex(/[A-Z]\w+/)
-    .required(),
+  password: Joi.string().min(8).max(30).required(),
 })
 
 const validate = async (schema, body, next) => {
