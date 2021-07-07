@@ -51,10 +51,7 @@ const changeName = async (title, sprintId) => {
 
 const getAllSprints = async projectId => {
   try {
-    const result = await Sprint.find(
-      { projectId: projectId },
-      { projectOwnerId: 1, _id: 1 },
-    )
+    const result = await Sprint.find({ projectId: projectId })
     return result
   } catch (err) {
     return err.message
