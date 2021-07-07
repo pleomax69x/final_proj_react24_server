@@ -20,11 +20,19 @@ const create = async (req, res, next) => {
     })
 
     if (project) {
-      await Users.addProjectToUser(userId, project.id)
-      return res.status(HttpCode.CREATED).json({
-        status: 'created',
-        code: HttpCode.CREATED,
-        data: { project },
+      const addProject = await Users.addProjectToUser(userId, project.id)
+
+      if (addProject) {
+        return res.status(HttpCode.CREATED).json({
+          status: 'created',
+          code: HttpCode.CREATED,
+          data: { project },
+        })
+      }
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+        status: 'fail',
+        code: HttpCode.INTERNAL_SERVER_ERROR,
+        message: 'project was not added to user',
       })
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
@@ -81,32 +89,34 @@ const remove = async (req, res, next) => {
           projectSprints.map(async sprint => {
             return await Sprints.removeSprintAndTasks(sprint._id)
           })
-          console.log('sprints & tasks was deleted')
         }
-        console.log('there were no sprints in the project')
 
         const teammatesId = project.teammates.map(el => el.id)
         const removeUsers = await Users.removeProjectFromAllUsers(
           teammatesId,
           projectId,
         )
-        removeUsers
-          ? console.log('Project removed from users')
-          : console.log('Project not removed from users')
 
-        const removeProject = await Projects.removeProject(userId, projectId)
+        if (removeUsers) {
+          const removeProject = await Projects.removeProject(userId, projectId)
 
-        if (removeProject) {
-          return res.status(HttpCode.OK).json({
-            status: 'success',
-            code: HttpCode.OK,
-            message: 'project was deleted',
+          if (removeProject) {
+            return res.status(HttpCode.OK).json({
+              status: 'success',
+              code: HttpCode.OK,
+              message: 'project was deleted',
+            })
+          }
+          return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
+            status: 'fail',
+            code: HttpCode.INTERNAL_SERVER_ERROR,
+            message: 'project was not deleted',
           })
         }
         return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
           status: 'fail',
           code: HttpCode.INTERNAL_SERVER_ERROR,
-          message: 'project was not deleted',
+          message: 'users are not deleted from project',
         })
       }
       return res.status(HttpCode.FORBIDDEN).json({
@@ -171,19 +181,31 @@ const patch = async (req, res, next) => {
 }
 
 const checkAccess = async (req, res, next) => {
-  const userId = req.user.id
+  const user = req.user
   const projectId = req.params.projectId
   try {
     const project = await Projects.getProjectById(projectId)
 
     if (project) {
-      const teammate = await Users.findByProjectsId(userId, projectId)
+      const isTeammate = await Projects.isTeammate(user, projectId)
 
-      if (teammate) {
-        return res.status(HttpCode.OK).json({
-          status: 'success',
-          code: HttpCode.OK,
-          data: { project },
+      if (isTeammate) {
+        const sprints = await Sprint.getAllSprints(projectId)
+
+        if (sprints) {
+          return res.status(HttpCode.OK).json({
+            status: 'success',
+            code: HttpCode.OK,
+            data: {
+              project,
+              sprints: sprints,
+            },
+          })
+        }
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: 'error',
+          code: HttpCode.NOT_FOUND,
+          message: 'sprints list is empty',
         })
       }
       return res.status(HttpCode.FORBIDDEN).json({

@@ -146,13 +146,13 @@ const changeTask = async (req, res, next) => {
         return total + current.hours
       }, 0)
 
-      const chahgeTotalHours = await Task.changeTotal(taskId, totalHours)
+      const changeTotalHours = await Task.changeTotal(taskId, totalHours)
 
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         message: 'task was changed',
-        data: chahgeTotalHours,
+        data: changeTotalHours,
       })
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
@@ -165,7 +165,7 @@ const changeTask = async (req, res, next) => {
   }
 }
 
-const changescheduledHours = async (req, res, next) => {
+const changeScheduledHours = async (req, res, next) => {
   const { taskId } = req.params
   const { scheduledHours } = req.body
 
@@ -211,5 +211,5 @@ module.exports = {
   deleteTask,
   getAllTasks,
   changeTask,
-  changescheduledHours,
+  changeScheduledHours,
 }
