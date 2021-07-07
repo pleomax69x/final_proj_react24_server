@@ -1238,6 +1238,7 @@
           }
         },
         "example": {
+          "title": "Task1",
           "scheduledHours": 5.5
         }
       },
