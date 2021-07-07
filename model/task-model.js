@@ -28,10 +28,13 @@ const removeTask = async taskId => {
 
 const removeTaskByProjectOwnerId = async owner => {
   if (owner) {
-    const result = await Tasks.deleteMany({ projectOwnerId: owner }) ///проверить!
-    return result
+    try {
+      const result = await Tasks.deleteMany({ projectOwnerId: owner })
+      return result
+    } catch (err) {
+      return err.message
+    }
   }
-  return console.log('user id is required')
 }
 
 const removeAllTasksBySprintId = async sprintId => {
@@ -75,25 +78,33 @@ const changeScheduledHours = async (taskId, scheduledHours) => {
 
 const changeHours = async (taskId, hoursPerDay) => {
   if ((taskId, hoursPerDay)) {
-    const { date, hours } = hoursPerDay
+    try {
+      const { date, hours } = hoursPerDay
 
-    const result = await Tasks.updateOne(
-      { _id: taskId, 'hoursPerDay.date': date },
-      {
-        $set: { 'hoursPerDay.$.hours': hours },
-      },
-    )
-    return result
+      const result = await Tasks.updateOne(
+        { _id: taskId, 'hoursPerDay.date': date },
+        {
+          $set: { 'hoursPerDay.$.hours': hours },
+        },
+      )
+      return result
+    } catch (err) {
+      return err.message
+    }
   }
 }
 
 const changeTotal = async (taskId, totalHours) => {
-  const result = await Tasks.findOneAndUpdate(
-    { _id: taskId },
-    { totalHours },
-    { new: true },
-  )
-  return result
+  try {
+    const result = await Tasks.findOneAndUpdate(
+      { _id: taskId },
+      { totalHours },
+      { new: true },
+    )
+    return result
+  } catch (err) {
+    return err.message
+  }
 }
 
 module.exports = {

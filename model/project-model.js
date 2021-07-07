@@ -33,11 +33,10 @@ const isOwner = async (projectId, userId) => {
 }
 
 const isTeammate = async (user, projectId) => {
-  const result = await Project.findOne({
+  return await Project.findOne({
     _id: projectId,
     teammates: { $elemMatch: { email: user.email } },
   })
-  return result
 }
 
 const removeProject = async (userId, projectId) => {
@@ -46,10 +45,8 @@ const removeProject = async (userId, projectId) => {
 
 const removeAllProjects = async owner => {
   if (owner) {
-    const result = await Project.deleteMany({ owner })
-    return result
+    return await Project.deleteMany({ owner })
   }
-  return console.log('user id is required')
 }
 
 const updateProjectName = async (userId, projectId, body) => {
@@ -73,7 +70,7 @@ const addTeammateToProject = async (user, projectId) => {
 }
 
 const removeTeammate = async (projectId, teammate) => {
-  const result = await Project.updateOne(
+  return await Project.updateOne(
     { _id: projectId },
     {
       $pull: {
@@ -81,7 +78,6 @@ const removeTeammate = async (projectId, teammate) => {
       },
     },
   )
-  return result
 }
 
 module.exports = {

@@ -29,10 +29,13 @@ const removeSprint = async sprintId => {
 
 const removeAllSprints = async projectOwnerId => {
   if (projectOwnerId) {
-    const result = await Sprint.deleteMany({ projectOwnerId })
-    return result
+    try {
+      const result = await Sprint.deleteMany({ projectOwnerId })
+      return result
+    } catch (err) {
+      return err.message
+    }
   }
-  return console.log('user id is required')
 }
 
 const changeName = async (title, sprintId) => {

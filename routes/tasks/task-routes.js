@@ -19,7 +19,7 @@ router.patch(
   '/scheduledHours/:taskId',
   guard,
   validateChangScheduledHours,
-  ctrl.changescheduledHours,
+  ctrl.changeScheduledHours,
 )
 
 module.exports = router
