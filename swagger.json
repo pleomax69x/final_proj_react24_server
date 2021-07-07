@@ -1328,8 +1328,10 @@
           }
         },
         "example": {
-          "date": "2021-07-07",
-          "hours": 0
+          "hoursPerDay": {
+            "date": "2021-07-02",
+            "hours": 3
+          }
         }
       },
       "TeammatesRequest": {
