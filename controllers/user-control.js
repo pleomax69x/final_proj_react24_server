@@ -172,7 +172,7 @@ const removeAllSprints = async (req, res, next) => {
         const isOwner = sprint.projectOwnerId.toString() === id
 
         if (isOwner) {
-          await Sprints.removeSprintAndTasks(sprint._id)
+          return await Sprints.removeSprintAndTasks(sprint._id)
         }
         return res.status(HttpCode.FORBIDDEN).json({
           status: 'error',
