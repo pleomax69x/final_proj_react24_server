@@ -22,7 +22,10 @@ const addTeammate = async (req, res, next) => {
           await User.addProjectToUser(user._id, projectId)
         }
 
-        await Project.addTeammateToProject(user, projectId)
+        const { teammates } = await Project.addTeammateToProject(
+          user,
+          projectId,
+        )
 
         return res.status(HttpCode.CREATED).json({
           status: 'created',
@@ -33,6 +36,7 @@ const addTeammate = async (req, res, next) => {
               id: user._id,
               email: user.email,
             },
+            teammates,
           },
         })
       }
@@ -66,12 +70,13 @@ const removeTeammate = async (req, res, next) => {
     const isTeammate = await Project.isTeammate(teammate, projectId)
 
     if (isTeammate) {
-      await Project.removeTeammate(projectId, teammate)
+      const { teammates } = await Project.removeTeammate(projectId, teammate)
 
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         message: `teammate "${teammate.email}" was delete`,
+        data: teammates,
       })
     }
     return res.status(HttpCode.NOT_FOUND).json({
