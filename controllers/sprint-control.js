@@ -10,9 +10,15 @@ const addSprint = async (req, res, next) => {
     const isOwner = await Project.isOwner(projectId, currentUser)
 
     if (isOwner) {
+      const { listOfDates } = req.body
+
+      const lastIndex = listOfDates.length - 1
+      const endDate = listOfDates[lastIndex]
+
       const data = {
         ...req.body,
         projectId,
+        endDate,
         projectOwnerId: currentUser,
       }
       const newSprint = await Sprint.createSprint(data)
