@@ -5,6 +5,6 @@ const guard = require('../../helpers/guard')
 const { validateDelTeammate, validateAddTeammate } = require('./validation')
 
 router.post('/:projectId', guard, validateAddTeammate, ctrl.addTeammate)
-router.delete('/:projectId', guard, validateDelTeammate, ctrl.removeTeammate)
+router.delete('/:projectId/:userId', guard, ctrl.removeTeammate)
 
 module.exports = router

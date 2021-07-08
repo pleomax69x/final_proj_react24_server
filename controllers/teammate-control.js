@@ -57,10 +57,10 @@ const addTeammate = async (req, res, next) => {
 }
 
 const removeTeammate = async (req, res, next) => {
-  const projectId = req.params.projectId
+  const { projectId, userId } = req.params
 
   try {
-    const teammate = await User.findByEmail(req.body.email)
+    const teammate = await User.findById(userId)
 
     if (teammate._id) {
       console.log('remove project from user')

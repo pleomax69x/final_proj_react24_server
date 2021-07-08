@@ -6,10 +6,6 @@ const schemaAddTeammate = Joi.object({
   projectId: Joi.string().required(),
 })
 
-const schemaDelTeammate = Joi.object({
-  email: Joi.string().required(),
-})
-
 const addValidate = async (
   schema,
   { body: { email }, params: { projectId } },
@@ -30,23 +26,7 @@ const addValidate = async (
     })
   }
 }
-const delValidate = async (schema, email, next) => {
-  try {
-    await schema.validateAsync(email)
-    next()
-  } catch (err) {
-    next({
-      status: 'error',
-      code: HttpCode.BAD_REQUEST,
-      message: err.message,
-    })
-  }
-}
 
 module.exports.validateAddTeammate = (req, _res, next) => {
   return addValidate(schemaAddTeammate, req, next)
-}
-
-module.exports.validateDelTeammate = (req, _res, next) => {
-  return delValidate(schemaDelTeammate, req.body, next)
 }
