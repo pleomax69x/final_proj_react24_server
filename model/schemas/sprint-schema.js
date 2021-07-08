@@ -11,6 +11,10 @@ const sprintSchema = new Schema(
       type: String,
       required: [true, 'Date is required'],
     },
+    endDate: {
+      type: String,
+      required: false,
+    },
     duration: {
       type: Number,
       required: [true, 'Duration is required'],
