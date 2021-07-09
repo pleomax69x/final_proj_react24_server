@@ -26,6 +26,7 @@ const create = async (req, res, next) => {
         return res.status(HttpCode.CREATED).json({
           status: 'created',
           code: HttpCode.CREATED,
+          message: 'project was created',
           data: { project },
         })
       }
@@ -101,9 +102,9 @@ const remove = async (req, res, next) => {
           const removeProject = await Projects.removeProject(userId, projectId)
 
           if (removeProject) {
-            return res.status(HttpCode.OK).json({
+            return res.status(HttpCode.NO_CONTENT).json({
               status: 'success',
-              code: HttpCode.OK,
+              code: HttpCode.NO_CONTENT,
               message: 'project was deleted',
             })
           }
@@ -155,6 +156,7 @@ const patch = async (req, res, next) => {
           return res.status(HttpCode.OK).json({
             status: 'success',
             code: HttpCode.OK,
+            message: 'project name was changed',
             data: { project: changedProjectName },
           })
         }

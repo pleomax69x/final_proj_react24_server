@@ -57,7 +57,7 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "User was created",
             "content": {
               "application/json": {
                 "schema": {
@@ -67,12 +67,10 @@
             }
           },
           "400": {
-            "description": "Bad request (Invalid request body)",
-            "content": {}
+            "description": "Bad request (Invalid request body)"
           },
           "409": {
-            "description": "Conflict (Email is in use)",
-            "content": {}
+            "description": "Conflict (Email is in use)"
           }
         }
       }
@@ -110,12 +108,10 @@
             }
           },
           "400": {
-            "description": "Bad request (Invalid request body)",
-            "content": {}
+            "description": "Bad request (Invalid request body)"
           },
           "401": {
-            "description": "Unauthorized (Email or password is wrong)",
-            "content": {}
+            "description": "Unauthorized (Email or password is wrong)"
           }
         }
       }
@@ -135,8 +131,7 @@
             "description": "Successful logout (No content)"
           },
           "401": {
-            "description": "Unauthorized (Not authorized)",
-            "content": {}
+            "description": "Unauthorized (Not authorized)"
           }
         }
       }
@@ -180,7 +175,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Status"
+                    }
+                  ],
+                  "example": {
+                    "status": "success",
+                    "code": 200,
+                    "message": "projects were deleted"
+                  }
+                }
+              }
+            }
           },
           "401": {
             "description": "Not authorized"
@@ -218,7 +229,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Status"
+                    }
+                  ],
+                  "example": {
+                    "status": "success",
+                    "code": 200,
+                    "message": "sprints and tasks were deleted"
+                  }
+                }
+              }
+            }
           },
           "401": {
             "description": "Not authorized"
@@ -263,21 +290,39 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectsResponse"
+                },
+                "example": {
+                  "status": "created",
+                  "code": 201,
+                  "message": "project was created",
+                  "data": {
+                    "project": {
+                      "teammates": [
+                        {
+                          "id": "60dc352e3a8e74001c7d05f3",
+                          "email": "yourmail@gmail.com"
+                        }
+                      ],
+                      "_id": "60dc352e3a8e74001c7d05cr",
+                      "name": "Project1",
+                      "description": "description",
+                      "owner": "60dc352e3a8e74001c7d05f3",
+                      "createdAt": "2021-07-04T17:37:30.810Z",
+                      "updatedAt": "2021-07-04T17:37:30.810Z"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (Validation Error)",
-            "content": {}
+            "description": "Bad request (Validation Error)"
           },
           "401": {
-            "description": "Not authorized",
-            "content": {}
+            "description": "Not authorized"
           },
           "500": {
-            "description": "Internal server error (project was not created)",
-            "content": {}
+            "description": "Internal server error (project was not created)"
           }
         }
       },
@@ -325,6 +370,31 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectsResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "data": {
+                    "total": 1,
+                    "limit": 12,
+                    "page": 1,
+                    "projects": [
+                      {
+                        "teammates": [
+                          {
+                            "id": "60dc352e3a8e74001c7d05f3",
+                            "email": "yourmail@gmail.com"
+                          }
+                        ],
+                        "_id": "60dc352e3a8e74001c7d05cr",
+                        "name": "Project1",
+                        "description": "description",
+                        "owner": "60dc352e3a8e74001c7d05f3",
+                        "createdAt": "2021-07-04T17:37:30.810Z",
+                        "updatedAt": "2021-07-04T17:37:30.810Z"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -360,8 +430,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "Success (project was deleted)"
           },
           "401": {
             "description": "Not authorized"
@@ -401,7 +471,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectsRequest"
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Project name",
+                    "minLength": 3,
+                    "maxLength": 30
+                  }
+                },
+                "example": {
+                  "name": "Renamed project"
+                }
               }
             }
           }
@@ -413,6 +493,27 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectsResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "message": "project name was changed",
+                  "data": {
+                    "project": {
+                      "teammates": [
+                        {
+                          "id": "60dc352e3a8e74001c7d05f3",
+                          "email": "yourmail@gmail.com"
+                        }
+                      ],
+                      "_id": "60dc352e3a8e74001c7d05cr",
+                      "name": "Renamed project",
+                      "description": "description",
+                      "owner": "60dc352e3a8e74001c7d05f3",
+                      "createdAt": "2021-07-04T17:37:30.810Z",
+                      "updatedAt": "2021-07-04T17:37:30.810Z"
+                    }
+                  }
                 }
               }
             }
@@ -472,6 +573,25 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SprintsResponse"
+                },
+                "example": {
+                  "status": "created",
+                  "code": 201,
+                  "message": "sprint was created",
+                  "data": {
+                    "sprint": {
+                      "_id": "60dc352e3a8e74001c7d06er",
+                      "title": "Sprint1",
+                      "date": "2021-07-01",
+                      "duration": "3",
+                      "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"],
+                      "endDate": "2021-07-03",
+                      "projectId": "60dc352e3a8e74001c7d05cr",
+                      "projectOwnerId": "60dc352e3a8e74001c7d05f3",
+                      "createdAt": "2021-07-05T14:59:56.691Z",
+                      "updatedAt": "2021-07-05T14:59:56.691Z"
+                    }
+                  }
                 }
               }
             }
@@ -515,6 +635,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SprintsResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "data": {
+                    "project": {
+                      "teammates": [
+                        {
+                          "id": "60dc352e3a8e74001c7d05f3",
+                          "email": "yourmail@gmail.com"
+                        }
+                      ],
+                      "_id": "60dc352e3a8e74001c7d05cr",
+                      "name": "Project1",
+                      "description": "description",
+                      "owner": "60dc352e3a8e74001c7d05f3",
+                      "createdAt": "2021-07-04T17:37:30.810Z",
+                      "updatedAt": "2021-07-04T17:37:30.810Z"
+                    },
+                    "sprints": [
+                      {
+                        "_id": "60dc352e3a8e74001c7d06er",
+                        "title": "Sprint1",
+                        "date": "2021-07-01",
+                        "duration": "3",
+                        "listOfDates": [
+                          "2021-07-01",
+                          "2021-07-02",
+                          "2021-07-03"
+                        ],
+                        "endDate": "2021-07-03",
+                        "projectId": "60dc352e3a8e74001c7d05cr",
+                        "projectOwnerId": "60dc352e3a8e74001c7d05f3",
+                        "createdAt": "2021-07-05T14:59:56.691Z",
+                        "updatedAt": "2021-07-05T14:59:56.691Z"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -593,6 +751,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SprintsRequest"
+              },
+              "example": {
+                "title": "Renamed sprint"
               }
             }
           }
@@ -604,6 +765,18 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SprintsResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "message": "title was changed",
+                  "data": {
+                    "sprint": {
+                      "id": "60dc352e3a8e74001c7d06er",
+                      "newTitle": "Renamed sprint",
+                      "projectId": "60dc352e3a8e74001c7d05cr"
+                    }
+                  }
                 }
               }
             }
@@ -663,6 +836,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TasksResponse"
+                },
+                "example": {
+                  "status": "created",
+                  "code": 201,
+                  "message": "task was created",
+                  "data": {
+                    "newTask": {
+                      "_id": "60e323f8ca948f25ccdf9ab3",
+                      "scheduledHours": 5.5,
+                      "hoursPerDay": [
+                        {
+                          "date": "2021-07-01",
+                          "hours": 0
+                        },
+                        {
+                          "date": "2021-07-02",
+                          "hours": 0
+                        },
+                        {
+                          "date": "2021-07-03",
+                          "hours": 0
+                        }
+                      ],
+                      "totalHours": 0,
+                      "title": "Task1",
+                      "sprintId": "60e31e6cca948f25ccdf9aab",
+                      "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
+                      "createdAt": "2021-07-05T15:23:36.653Z",
+                      "updatedAt": "2021-07-05T15:23:36.653Z"
+                    }
+                  }
                 }
               }
             }
@@ -706,6 +910,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TasksResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "data": {
+                    "sprint": {
+                      "_id": "60e31e6cca948f25ccdf9aab",
+                      "title": "Sprint1",
+                      "date": "2021-07-01",
+                      "duration": "3",
+                      "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"],
+                      "endDate": "2021-07-03",
+                      "projectId": "60e576129cd95b3c7833cd2w",
+                      "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
+                      "createdAt": "2021-07-05T14:59:56.691Z",
+                      "updatedAt": "2021-07-05T14:59:56.691Z"
+                    },
+                    "tasks": [
+                      {
+                        "_id": "60e323f8ca948f25ccdf9ab3",
+                        "scheduledHours": 5.5,
+                        "hoursPerDay": [
+                          {
+                            "date": "2021-07-01",
+                            "hours": 0
+                          },
+                          {
+                            "date": "2021-07-02",
+                            "hours": 0
+                          },
+                          {
+                            "date": "2021-07-03",
+                            "hours": 0
+                          }
+                        ],
+                        "totalHours": 0,
+                        "title": "Task1",
+                        "sprintId": "60e31e6cca948f25ccdf9aab",
+                        "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
+                        "createdAt": "2021-07-05T15:23:36.653Z",
+                        "updatedAt": "2021-07-05T15:23:36.653Z"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -792,6 +1040,39 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TasksResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "message": "task was changed",
+                  "data": {
+                    "task": [
+                      {
+                        "_id": "60e323f8ca948f25ccdf9ab3",
+                        "scheduledHours": 5.5,
+                        "hoursPerDay": [
+                          {
+                            "date": "2021-07-01",
+                            "hours": 0
+                          },
+                          {
+                            "date": "2021-07-02",
+                            "hours": 3
+                          },
+                          {
+                            "date": "2021-07-03",
+                            "hours": 0
+                          }
+                        ],
+                        "totalHours": 0,
+                        "title": "Task1",
+                        "sprintId": "60e31e6cca948f25ccdf9aab",
+                        "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
+                        "createdAt": "2021-07-05T15:23:36.653Z",
+                        "updatedAt": "2021-07-05T15:23:36.653Z"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -834,6 +1115,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/TasksRequest"
+              },
+              "example": {
+                "scheduledHours": 6
               }
             }
           }
@@ -845,6 +1129,15 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TasksResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "code": 200,
+                  "message": "scheduledHours was changed",
+                  "data": {
+                    "taskId": "60e833a7c0489d2468083945",
+                    "scheduledHours": 6
+                  }
                 }
               }
             }
@@ -898,6 +1191,27 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TeammatesResponse"
+                },
+                "example": {
+                  "status": "created",
+                  "code": 201,
+                  "message": "user othermail@gmail.com was added",
+                  "data": {
+                    "user": {
+                      "id": "60dc352e3a8e74001c7d05f3",
+                      "email": "othermail@gmail.com"
+                    },
+                    "teammates": [
+                      {
+                        "email": "yourmail@gmail.com",
+                        "id": "60dc352e3a8e74001c7d05f3"
+                      },
+                      {
+                        "email": "othermail@gmail.com",
+                        "id": "60dc352e3a8e74001c7d0583"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -915,13 +1229,23 @@
             "description": "Conflict (user already in project)"
           }
         }
-      },
+      }
+    },
+    "/teammates/{projectId}/{teammateId}": {
       "delete": {
         "tags": ["Teammates"],
         "summary": "Delete teammate from project",
         "parameters": [
           {
             "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teammateId",
             "in": "path",
             "required": true,
             "schema": {
@@ -974,9 +1298,13 @@
         }
       },
       "RegistrationResponse": {
-        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
+          }
+        ],
         "example": {
-          "status": "Created",
+          "status": "created",
           "code": 201,
           "data": {
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGMzNTJlM2E4ZTc0MDAxYzdkMDVmMyIsImlhdCI6MTYyNTA0NDI3MCwiZXhwIjoxNjI1MTMwNjcwfQ.AKHW4VtuVt9ibrMNXLrS32j2hjrTcwF2l60jNFOuOYA",
@@ -1007,7 +1335,11 @@
         }
       },
       "LoginResponse": {
-        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
+          }
+        ],
         "example": {
           "status": "success",
           "code": 200,
@@ -1021,13 +1353,38 @@
         }
       },
       "CurrentResponse": {
-        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
+          }
+        ],
         "example": {
           "status": "success",
           "code": 200,
           "data": {
-            "email": "yourmail@gmail.com"
+            "email": "yourmail@gmail.com",
+            "id": "60dc352e3a8e74001c7d05f3"
           }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "discriminator": {
+          "propertyName": "data"
         }
       },
       "ProjectsRequest": {
@@ -1053,64 +1410,51 @@
         }
       },
       "ProjectsResponse": {
-        "type": "object",
-        "required": ["name", "description"],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "auto generated id of the project"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
           },
-          "name": {
-            "type": "string",
-            "description": "Project name",
-            "minLength": 3,
-            "maxLength": 30
-          },
-          "description": {
-            "type": "string",
-            "description": "Project description",
-            "minLength": 5,
-            "maxLength": 100
-          },
-          "owner": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "Ref to user (Owner of the project)"
-          },
-          "teammates": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TeammatesResponse"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When project was created"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When project was updated"
-          }
-        },
-        "example": {
-          "project": {
-            "teammates": [
-              {
-                "id": "60dc352e3a8e74001c7d05f3",
-                "email": "yourmail@gmail.com"
+          {
+            "type": "object",
+            "required": ["name", "description"],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "auto generated id of the project"
+              },
+              "name": {
+                "type": "string",
+                "description": "Project name"
+              },
+              "description": {
+                "type": "string",
+                "description": "Project description"
+              },
+              "owner": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "Ref to user (Owner of the project)"
+              },
+              "teammates": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TeammatesResponse"
+                }
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When project was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When project was updated"
               }
-            ],
-            "_id": "60dc352e3a8e74001c7d05cr",
-            "name": "Project1",
-            "description": "description",
-            "owner": "60dc352e3a8e74001c7d05f3",
-            "createdAt": "2021-07-04T17:37:30.810Z",
-            "updatedAt": "2021-07-04T17:37:30.810Z"
+            }
           }
-        }
+        ]
       },
       "SprintsRequest": {
         "type": "object",
@@ -1130,7 +1474,7 @@
           },
           "listOfDates": {
             "type": "array",
-            "description": "List of dates come from front-end",
+            "description": "List of dates comes from front-end",
             "items": {
               "type": "string"
             }
@@ -1144,72 +1488,73 @@
         }
       },
       "SprintsResponse": {
-        "type": "object",
-        "required": [
-          "title",
-          "date",
-          "duration",
-          "listOfDates",
-          "projectId",
-          "projectOwnerId"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "auto-generated id"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
           },
-          "title": {
-            "type": "string",
-            "description": "Sprint title"
-          },
-          "date": {
-            "type": "string",
-            "description": "Sprint start date"
-          },
-          "duration": {
-            "type": "number",
-            "description": "Duration of the sprint"
-          },
-          "projectId": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "Ref to project"
-          },
-          "listOfDates": {
-            "type": "array",
-            "description": "List of dates come from front-end",
-            "items": {
-              "type": "string"
+          {
+            "type": "object",
+            "required": [
+              "title",
+              "date",
+              "duration",
+              "listOfDates",
+              "endDate",
+              "projectId",
+              "projectOwnerId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "auto-generated id"
+              },
+              "title": {
+                "type": "string",
+                "description": "Sprint title"
+              },
+              "date": {
+                "type": "string",
+                "description": "Sprint start date"
+              },
+              "duration": {
+                "type": "number",
+                "description": "Duration of the sprint"
+              },
+              "projectId": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "Ref to project"
+              },
+              "listOfDates": {
+                "type": "array",
+                "description": "List of dates come from front-end",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "endDate": {
+                "type": "string",
+                "description": "End date of sprint"
+              },
+              "projectOwnerId": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "Ref to user"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When sprint was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When sprint was updated"
+              }
             }
-          },
-          "projectOwnerId": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "Ref to user"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When sprint was created"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When sprint was updated"
           }
-        },
-        "example": {
-          "_id": "60dc352e3a8e74001c7d06er",
-          "title": "Sprint1",
-          "date": "2021-07-01",
-          "duration": "3",
-          "listOfDates": ["2021-07-01", "2021-07-02", "2021-07-03"],
-          "projectId": "60e576129cd95b3c7833cd2w",
-          "projectOwnerId": "60dc352e3a8e74001c7d05f3",
-          "createdAt": "2021-07-05T14:59:56.691Z",
-          "updatedAt": "2021-07-05T14:59:56.691Z"
-        }
+        ]
       },
       "TasksRequest": {
         "type": "object",
@@ -1243,75 +1588,63 @@
         }
       },
       "TasksResponse": {
-        "type": "object",
-        "required": ["title", "scheduledHours", "sprintId", "projectOwnerId"],
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Sprint title"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
           },
-          "scheduledHours": {
-            "type": "number",
-            "default": 2,
-            "description": "Scheduled hours to complete task"
-          },
-          "hoursPerDay": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HoursPerDay"
-            },
-            "description": "Hours per day spent on task"
-          },
-          "totalHours": {
-            "type": "number",
-            "default": 0,
-            "description": "Total hours spent on tasks"
-          },
-          "sprintId": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "Ref to sprint"
-          },
-          "projectOwnerId": {
-            "type": "string",
-            "format": "ObjectId",
-            "description": "Ref to user"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When task was created"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "ISODate",
-            "description": "When task was updated"
-          }
-        },
-        "example": {
-          "_id": "60e323f8ca948f25ccdf9ab3",
-          "scheduledHours": 5,
-          "hoursPerDay": [
-            {
-              "date": "2021-07-01",
-              "hours": 0
-            },
-            {
-              "date": "2021-07-02",
-              "hours": 0
-            },
-            {
-              "date": "2021-07-03",
-              "hours": 0
+          {
+            "type": "object",
+            "required": [
+              "title",
+              "scheduledHours",
+              "sprintId",
+              "projectOwnerId"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Sprint title"
+              },
+              "scheduledHours": {
+                "type": "number",
+                "default": 2,
+                "description": "Scheduled hours to complete task"
+              },
+              "hoursPerDay": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HoursPerDay"
+                },
+                "description": "Hours per day spent on task"
+              },
+              "totalHours": {
+                "type": "number",
+                "default": 0,
+                "description": "Total hours spent on tasks"
+              },
+              "sprintId": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "Ref to sprint"
+              },
+              "projectOwnerId": {
+                "type": "string",
+                "format": "ObjectId",
+                "description": "Ref to user"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When task was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "ISODate",
+                "description": "When task was updated"
+              }
             }
-          ],
-          "totalHours": 0,
-          "title": "Task1",
-          "sprintId": "60e31e6cca948f25ccdf9aab",
-          "projectOwnerId": "60dee04fd2bc8a42b4b7dc6b",
-          "createdAt": "2021-07-05T15:23:36.653Z",
-          "updatedAt": "2021-07-05T15:23:36.653Z"
-        }
+          }
+        ]
       },
       "HoursPerDay": {
         "type": "object",
@@ -1344,28 +1677,29 @@
           }
         },
         "example": {
-          "email": "yourmail@gmail.com"
+          "email": "othermail@gmail.com"
         }
       },
       "TeammatesResponse": {
-        "type": "object",
-        "required": ["id", "email"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "teammate id"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Status"
           },
-          "email": {
-            "type": "string",
-            "description": "teammate email"
+          {
+            "type": "object",
+            "required": ["id", "email"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "teammate id"
+              },
+              "email": {
+                "type": "string",
+                "description": "teammate email"
+              }
+            }
           }
-        },
-        "example": {
-          "user": {
-            "id": "60dc352e3a8e74001c7d05f3",
-            "email": "yourmail@gmail.com"
-          }
-        }
+        ]
       }
     },
     "securitySchemes": {

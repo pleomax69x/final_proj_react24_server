@@ -27,6 +27,7 @@ const addSprint = async (req, res, next) => {
         return res.status(HttpCode.CREATED).json({
           status: 'created',
           code: HttpCode.CREATED,
+          message: 'sprint was created',
           data: {
             sprint: newSprint,
           },
