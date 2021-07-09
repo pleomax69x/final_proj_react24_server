@@ -144,7 +144,7 @@ const removeAllProjects = async (req, res, next) => {
         return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
           status: 'fail',
           code: HttpCode.INTERNAL_SERVER_ERROR,
-          message: 'projects were not deletes',
+          message: 'projects were not deleted',
         })
       }
       return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
@@ -192,7 +192,7 @@ const removeAllSprints = async (req, res, next) => {
     return res.status(HttpCode.NOT_FOUND).json({
       status: 'error',
       code: HttpCode.NOT_FOUND,
-      message: 'sprint list is empry!',
+      message: 'sprint list is empty!',
     })
   } catch (err) {
     next(err)

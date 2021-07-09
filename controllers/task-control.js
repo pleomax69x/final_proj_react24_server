@@ -4,7 +4,6 @@ const { HttpCode } = require('../helpers/constants')
 
 const addTask = async (req, res, next) => {
   const sprintId = req.params.sprintId
-  const currentUser = req.user.id
 
   try {
     const sprint = await Sprint.getSprintById(sprintId)
@@ -30,6 +29,7 @@ const addTask = async (req, res, next) => {
         return res.status(HttpCode.CREATED).json({
           status: 'Created',
           code: HttpCode.CREATED,
+          message: 'task was created',
           data: {
             newTask,
           },
@@ -158,7 +158,7 @@ const changeTask = async (req, res, next) => {
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: 'fail',
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: 'task was not change',
+      message: 'task was not changed',
     })
   } catch (err) {
     next(err.message)
@@ -185,7 +185,6 @@ const changeScheduledHours = async (req, res, next) => {
           message: 'scheduledHours was changed',
           data: {
             taskId,
-
             scheduledHours: changeHours.scheduledHours,
           },
         })
