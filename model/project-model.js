@@ -43,9 +43,9 @@ const removeProject = async (userId, projectId) => {
   return await Project.findByIdAndRemove({ _id: projectId, owner: userId })
 }
 
-const removeAllProjects = async owner => {
-  if (owner) {
-    return await Project.deleteMany({ owner })
+const removeAllProjects = async userId => {
+  if (userId) {
+    return await Project.deleteMany({ owner: userId })
   }
 }
 
