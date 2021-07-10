@@ -128,8 +128,11 @@ const removeAllProjects = async (req, res, next) => {
       const deleteSprints = await Sprints.removeAllSprints(id)
 
       if (deleteSprints) {
-        projectsId.map(async id => {
-          await Users.removeProjects(id)
+        projectsId.map(async projectId => {
+          const project = await Projects.getProjectById(projectId)
+          if (project.owner === id) {
+            await Users.removeProjects(id)
+          }
         })
 
         const deleteProjects = await Projects.removeAllProjects(id)

@@ -10,7 +10,7 @@ const schemaUser = Joi.object({
       tlds: { allow: false },
     })
     .required(),
-  password: Joi.string().min(8).max(30).required(),
+  password: Joi.string().min(4).max(30).required(),
 })
 
 const validate = async (schema, body, next) => {
