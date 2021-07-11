@@ -117,8 +117,7 @@ const current = async (req, res, next) => {
 }
 
 const removeAllProjects = async (req, res, next) => {
-  const { id } = req.user
-  const { projectsId } = req.user
+  const { id, projectsId } = req.user
 
   try {
     const deleteTasks = await Tasks.removeTaskByProjectOwnerId(id)
