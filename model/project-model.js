@@ -78,8 +78,7 @@ const removeTeammate = async (projectId, teammate) => {
       },
     },
   )
-  const result = await getProjectById(projectId)
-  return result
+  return await getProjectById(projectId)
 }
 
 module.exports = {

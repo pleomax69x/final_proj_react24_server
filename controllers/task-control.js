@@ -27,7 +27,7 @@ const addTask = async (req, res, next) => {
 
       if (newTask._id) {
         return res.status(HttpCode.CREATED).json({
-          status: 'Created',
+          status: 'created',
           code: HttpCode.CREATED,
           message: 'task was created',
           data: {
@@ -74,9 +74,9 @@ const deleteTask = async (req, res, next) => {
 
       if (deletedTask._id) {
         const { _id, title, sprintId } = deletedTask
-        return res.status(HttpCode.OK).json({
+        return res.status(HttpCode.NO_CONTENT).json({
           status: 'success',
-          code: HttpCode.OK,
+          code: HttpCode.NO_CONTENT,
           message: 'task was deleted',
           data: {
             task: {
@@ -148,9 +148,9 @@ const changeTask = async (req, res, next) => {
 
       const changeTotalHours = await Task.changeTotal(taskId, totalHours)
 
-      return res.status(HttpCode.OK).json({
+      return res.status(HttpCode.CREATED).json({
         status: 'success',
-        code: HttpCode.OK,
+        code: HttpCode.CREATED,
         message: 'task was changed',
         data: changeTotalHours,
       })
@@ -179,9 +179,9 @@ const changeScheduledHours = async (req, res, next) => {
       )
 
       if (changeHours._id) {
-        return res.status(HttpCode.OK).json({
+        return res.status(HttpCode.CREATED).json({
           status: 'success',
-          code: HttpCode.OK,
+          code: HttpCode.CREATED,
           message: 'scheduledHours was changed',
           data: {
             taskId,
