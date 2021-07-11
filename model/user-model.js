@@ -59,7 +59,6 @@ const removeProjects = async projectId => {
     },
     { new: true },
   )
-
   return users
 }
 
