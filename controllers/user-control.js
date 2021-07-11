@@ -62,9 +62,9 @@ const login = async (req, res, next) => {
     const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '24h' })
     await Users.updateToken(id, token)
 
-    return res.status(HttpCode.OK).json({
+    return res.status(HttpCode.CREATED).json({
       status: 'success',
-      code: HttpCode.OK,
+      code: HttpCode.CREATED,
       data: { token, user: { email, id } },
     })
   } catch (err) {
@@ -96,7 +96,6 @@ const current = async (req, res, next) => {
     const userId = req.user.id
     const user = await Users.findById(userId)
     if (user) {
-      const { email } = user
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
@@ -118,8 +117,7 @@ const current = async (req, res, next) => {
 }
 
 const removeAllProjects = async (req, res, next) => {
-  const { id } = req.user
-  const { projectsId } = req.user
+  const { id, projectsId } = req.user
 
   try {
     const deleteTasks = await Tasks.removeTaskByProjectOwnerId(id)
@@ -130,6 +128,7 @@ const removeAllProjects = async (req, res, next) => {
       if (deleteSprints) {
         projectsId.map(async projectId => {
           const project = await Projects.getProjectById(projectId)
+
           if (project.owner === id) {
             await Users.removeProjects(id)
           }
@@ -138,9 +137,9 @@ const removeAllProjects = async (req, res, next) => {
         const deleteProjects = await Projects.removeAllProjects(id)
 
         if (deleteProjects) {
-          return res.status(HttpCode.OK).json({
+          return res.status(HttpCode.NO_CONTENT).json({
             status: 'success',
-            code: HttpCode.OK,
+            code: HttpCode.NO_CONTENT,
             message: 'projects were deleted',
           })
         }
@@ -186,9 +185,9 @@ const removeAllSprints = async (req, res, next) => {
           message: 'only project owner can delete sprints',
         })
       })
-      return res.status(HttpCode.OK).json({
+      return res.status(HttpCode.NO_CONTENT).json({
         status: 'success',
-        code: HttpCode.OK,
+        code: HttpCode.NO_CONTENT,
         message: 'sprints and tasks were deleted',
       })
     }

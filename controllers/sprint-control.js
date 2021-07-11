@@ -65,9 +65,9 @@ const removeSprint = async (req, res, next) => {
         const removedSprint = await Sprint.removeSprintAndTasks(sprintId)
 
         if (removedSprint) {
-          return res.status(HttpCode.OK).json({
+          return res.status(HttpCode.NO_CONTENT).json({
             status: 'success',
-            code: HttpCode.OK,
+            code: HttpCode.NO_CONTENT,
             message: 'sprint was deleted',
             data: {
               sprint: removedSprint,
@@ -115,9 +115,9 @@ const changeSprintName = async (req, res, next) => {
         const { _id, title, projectId } = result
 
         if (_id) {
-          return res.status(HttpCode.OK).json({
+          return res.status(HttpCode.CREATED).json({
             status: 'success',
-            code: HttpCode.OK,
+            code: HttpCode.CREATED,
             message: 'title was changed',
             data: {
               sprint: {
