@@ -153,9 +153,9 @@ const patch = async (req, res, next) => {
           body,
         )
         if (changedProjectName) {
-          return res.status(HttpCode.OK).json({
+          return res.status(HttpCode.CREATED).json({
             status: 'success',
-            code: HttpCode.OK,
+            code: HttpCode.CREATED,
             message: 'project name was changed',
             data: { project: changedProjectName },
           })
