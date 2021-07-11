@@ -27,7 +27,7 @@ const removeSprint = async sprintId => {
   }
 }
 
-const removeAllSprints = async projectOwnerId => {
+const removeAllSprintsByProjectId = async projectOwnerId => {
   if (projectOwnerId) {
     try {
       const result = await Sprint.deleteMany({ projectOwnerId })
@@ -83,7 +83,7 @@ const removeSprintAndTasks = async sprintId => {
 module.exports = {
   createSprint,
   removeSprint,
-  removeAllSprints,
+  removeAllSprintsByProjectId,
   changeName,
   getAllSprints,
   getSprintById,

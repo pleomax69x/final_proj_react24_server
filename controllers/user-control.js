@@ -119,45 +119,29 @@ const removeAllProjects = async (req, res, next) => {
 
   try {
     const deleteTasks = await Tasks.removeTaskByProjectOwnerId(id)
+    const deleteSprints = await Sprints.removeAllSprintsByProjectId(id)
 
-    if (deleteTasks) {
-      const deleteSprints = await Sprints.removeAllSprints(id)
+    projectsId.map(async projectId => {
+      const project = await Projects.getProjectById(projectId)
 
-      if (deleteSprints) {
-        projectsId.map(async projectId => {
-          const project = await Projects.getProjectById(projectId)
-          
-          if (project?.owner === id) {
-            await Users.removeProjects(projectId)
-          }
-        })
-
-        const deleteProjects = await Projects.removeAllProjects(id)
-
-        if (deleteProjects.deletedCount !== 0) {
-          return res.status(HttpCode.OK).json({
-            status: 'success',
-            code: HttpCode.OK,
-            message: `${deleteProjects.deletedCount} project(s) were deleted`,
-
-          })
-        }
-        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
-          status: 'fail',
-          code: HttpCode.INTERNAL_SERVER_ERROR,
-          message: 'projects were not deleted',
-        })
+      if (project?.owner.toString() === id) {
+        await Users.removeProjects(projectId)
       }
-      return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
-        status: 'fail',
-        code: HttpCode.INTERNAL_SERVER_ERROR,
-        message: 'projects, sprints were not deleted',
+    })
+
+    const deleteProjects = await Projects.removeAllProjects(id)
+
+    if (deleteProjects.deletedCount !== 0) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        message: `${deleteProjects.deletedCount} project(s), ${deleteTasks.deletedCount} task(s), ${deleteSprints.deletedCount} sprint(s) were deleted`,
       })
     }
     return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
       status: 'fail',
       code: HttpCode.INTERNAL_SERVER_ERROR,
-      message: 'projects, sprints and tasks were not deleted',
+      message: 'projects were not deleted',
     })
   } catch (err) {
     next(err.message)
