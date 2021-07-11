@@ -4,9 +4,10 @@ const { HttpCode } = require('../helpers/constants')
 
 const addTeammate = async (req, res, next) => {
   const projectId = req.params.projectId
+  const userEmail = req.body.email.toLowerCase()
 
   try {
-    const user = await User.findByEmail(req.body.email)
+    const user = await User.findByEmail(userEmail)
 
     if (user) {
       const checkTeammateList = await Project.isTeammate(user, projectId)
