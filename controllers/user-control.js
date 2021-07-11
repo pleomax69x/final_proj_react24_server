@@ -14,8 +14,6 @@ const registration = async (req, res, next) => {
   try {
     const checksUser = await Users.findByEmail(userEmail)
 
-    console.log(checksUser)
-
     if (checksUser) {
       return res.status(HttpCode.CONFLICT).json({
         status: 'conflict',
@@ -130,18 +128,18 @@ const removeAllProjects = async (req, res, next) => {
       if (deleteSprints) {
         projectsId.map(async projectId => {
           const project = await Projects.getProjectById(projectId)
-          if (project.owner === id) {
-            await Users.removeProjects(id)
+          if (project?.owner === id) {
+            await Users.removeProjects(projectId)
           }
         })
 
         const deleteProjects = await Projects.removeAllProjects(id)
 
-        if (deleteProjects) {
+        if (deleteProjects.deletedCount !== 0) {
           return res.status(HttpCode.OK).json({
             status: 'success',
             code: HttpCode.OK,
-            message: 'projects were deleted',
+            message: `${deleteProjects.deletedCount} project(s) were deleted`,
           })
         }
         return res.status(HttpCode.INTERNAL_SERVER_ERROR).json({
